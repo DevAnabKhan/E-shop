@@ -1,6 +1,8 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { LoginPage, SignupPage } from "./Routes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
@@ -34,6 +36,7 @@ const App = () => {
           <Route path="list-bookings" element={<ListBookings />} />
         </Route> */}
       </Routes>
+      <ToastContainer position="bottom-center" autoClose={3000} />
     </div>
   );
 };
