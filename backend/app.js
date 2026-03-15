@@ -7,8 +7,13 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // <--- your frontend
+    credentials: true, // <--- allow cookies to be sent
+  }),
+);
 app.use("/", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
