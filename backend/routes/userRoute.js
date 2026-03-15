@@ -2,12 +2,17 @@ import express from "express";
 import upload from "../multer.js";
 import {
   activateUserAccount,
-  userController,
+  registerUser,
+  loginUser,
+  getUser,
 } from "../controller/userController.js";
+import { isAuthenticated } from "../middleware/auth.js";
 
 const userRouter = express.Router();
 
-userRouter.post("/create-user", upload.single("file"), userController);
+userRouter.post("/create-user", upload.single("file"), registerUser);
 userRouter.post("/activation", activateUserAccount);
+userRouter.post("/login-user", loginUser);
+userRouter.get("/getuser", isAuthenticated, getUser);
 
 export default userRouter;
