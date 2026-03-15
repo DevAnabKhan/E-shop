@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import jwtToken from "../utils/jwtToken.js";
 
-export const userController = catchAsyncErrors(async (req, res, next) => {
+export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password } = req.body;
 
   const userEmail = await User.findOne({ email });
@@ -97,3 +97,41 @@ const createActivationToken = (user) => {
     expiresIn: "5m",
   });
 };
+
+export const loginUser = catchAsyncErrors(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(new ErrorHandler("Please provide all fields!", 400));
+  }
+
+  const user = await User.findOne({ email }).select("password");
+
+  if (!user) {
+    return next(new ErrorHandler("User doestn't exists", 400));
+  }
+
+  const isPasswordValid = await user.comparePassword(password);
+
+  if (!isPasswordValid) {
+    return next(
+      new ErrorHandler("Please provide the correct information", 400),
+    );
+  }
+
+  jwtToken(user, 201, res);
+});
+
+export const getUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return next(new ErrorHandler("User doestn't exists", 400));
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Success",
+    user,
+  });
+});
