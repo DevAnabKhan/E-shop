@@ -18,6 +18,11 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
   });
 }
 
+app.use((req, res, next) => {
+  console.log("Incoming request:", req.method, req.url);
+  next();
+});
+
 app.use("/api/v2/user", userRouter);
 
 app.use(error);
