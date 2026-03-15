@@ -3,6 +3,9 @@ import User from "../model/userModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import path from "path";
 import fs from "fs";
+import jwt from "jsonwebtoken";
+import sendMail from "../utils/sendMail.js";
+import jwtToken from "../utils/jwtToken.js";
 
 export const userController = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -24,7 +27,7 @@ export const userController = catchAsyncErrors(async (req, res, next) => {
   const filename = req.file.filename;
   const fileUrl = `/uploads/${req.file.filename}`;
 
-  const user = await User.create({
+  const user = {
     name,
     email,
     password,
@@ -32,11 +35,65 @@ export const userController = catchAsyncErrors(async (req, res, next) => {
       public_id: req.file.filename,
       url: fileUrl,
     },
-  });
+  };
 
-  res.status(201).json({
+  const activationToken = createActivationToken(user);
+
+  const activationUrl = `http://localhost:5173/activation/${activationToken}`;
+  try {
+    await sendMail({
+      email: user.email,
+      subject: "Activate your account",
+      message: `Hello ${user.name}, please click the link to activate your account: ${activationUrl}`,
+    });
+  } catch (e) {
+    return next(new ErrorHandler(e.message, 500));
+  }
+
+  // const newUser = await User.create(user);
+
+  // res.status(201).json({
+  //   success: true,
+  //   message: "User registered successfully",
+  //   user: newUser,
+  // });
+
+  res.status(200).json({
     success: true,
-    message: "User registered successfully",
-    user,
+    message: `Please check your email: ${user.email} to activate your account`,
   });
 });
+
+export const activateUserAccount = catchAsyncErrors(async (req, res, next) => {
+  const { activation_token } = req.body;
+
+  let new_user;
+  try {
+    new_user = jwt.verify(activation_token, process.env.ACTIVATION_SECRET);
+  } catch (e) {
+    return next(new ErrorHandler("Invalid or expired activation token", 400));
+  }
+
+  const { name, email, password, avatar } = new_user;
+
+  const userEmail = await User.findOne({ email });
+
+  if (userEmail) {
+    return next(new ErrorHandler("User already exists", 400));
+  }
+
+  const user = await User.create({
+    name,
+    email,
+    password,
+    avatar,
+  });
+
+  jwtToken(user, 201, res);
+});
+
+const createActivationToken = (user) => {
+  return jwt.sign(user, process.env.ACTIVATION_SECRET, {
+    expiresIn: "5m",
+  });
+};
