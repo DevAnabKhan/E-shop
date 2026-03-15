@@ -1,10 +1,26 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { ActivationPage, LoginPage, SignupPage } from "./Routes";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { useEffect } from "react";
+import { server } from "./server";
 
+axios.defaults.withCredentials = true;
 const App = () => {
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`${server}/user/getuser`);
+      } catch (err) {
+        toast.success(err.response?.data?.message);
+        console.log(err);
+      }
+    };
+    fetchUser();
+  }, []);
+
   return (
     <div>
       <Routes>
