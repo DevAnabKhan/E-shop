@@ -18,14 +18,10 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${server}/user/login-user`,
-        {
-          email,
-          password,
-        },
-        { withCredentials: true },
-      );
+      const res = await axios.post(`${server}/user/login-user`, {
+        email,
+        password,
+      });
       if (res.data.success) {
         setLoading(false);
         toast.success(res.data.message);
