@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { RxAvatar } from "react-icons/rx";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server.js";
 import { toast } from "react-toastify";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -34,13 +35,15 @@ const Signup = () => {
         newForm,
         config,
       );
-      setLoading(false);
-      toast.success(res.data.message);
-
-      setName("");
-      setEmail("");
-      setPassword("");
-      setAvatar(null);
+      if (res.data.success) {
+        setLoading(false);
+        toast.success(res.data.message);
+        // navigate("/");
+        setName("");
+        setEmail("");
+        setPassword("");
+        setAvatar(null);
+      }
     } catch (error) {
       setLoading(false);
       console.log("Error caught:", error);
