@@ -1,11 +1,12 @@
 import React from "react";
 import Header from "../components/Layout/Header";
+import Hero from "../components/Route/Hero";
 
 const HomePage = () => {
   return (
     <div>
       <Header activeHeading={1} />
-      <p>home</p>
+      <Hero />
     </div>
   );
 };
