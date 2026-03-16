@@ -1,11 +1,9 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { ActivationPage, LoginPage, SignupPage } from "./Routes";
-import { toast, ToastContainer } from "react-toastify";
+import { ActivationPage, LoginPage, SignupPage, HomePage } from "./Routes";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useEffect } from "react";
-import { server } from "./server";
 import store from "./redux/store";
 import { loadUser } from "./redux/actions/user";
 
@@ -18,6 +16,7 @@ const App = () => {
   return (
     <div>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
         <Route
