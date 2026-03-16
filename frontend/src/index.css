@@ -10,11 +10,11 @@
   --font-poppins: "Poppins", sans-serif;
 
   /* Breakpoints */
-  --screen-400: 400px;
-  --screen-800: 800px;
-  --screen-1000: 1050px;
-  --screen-1100: 1110px;
-  --screen-1300: 1300px;
+  --breakpoint-400: 400px;
+  --breakpoint-800: 800px;
+  --breakpoint-1000: 1050px;
+  --breakpoint-1100: 1110px;
+  --breakpoint-1300: 1300px;
 }
 * {
   scroll-behavior: smooth;
