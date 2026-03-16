@@ -1,11 +1,11 @@
 import React from "react";
-import styles from "../../styles/styles";
+import styles from "../../../styles/styles";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
     <div
-      className={`relative min-h-[70vh] 800:min-h-[80vh] w-full bg-no-repeat flex justify-center items-center `}
+      className={`relative min-h-[40vh] md:min-h-[60vh] w-full bg-no-repeat bg-cover bg-center flex justify-center items-center`}
       style={{
         backgroundImage:
           "url(https://themes.rslahmed.dev/rafcart/assets/images/banner-2.jpg)",
