@@ -25,7 +25,7 @@ const Categories = () => {
       </div>
 
       <div
-        className={`${styles.section} bg-white rounded-lg mb-12`}
+        className={`${styles.section} bg-white rounded-lg mb-12 p-5`}
         id="categories"
       >
         <div className="grid grid-cols-1 gap-[5px] md:gap-[10px] lg:grid-cols-4 lg:gap-[20px] xl:grid-cols-5 xl:gap-[30px]">
@@ -36,7 +36,7 @@ const Categories = () => {
               };
               return (
                 <div
-                  className="w-full h-[100px] flex items-center justify-between cursor-pointer overflow-hidden"
+                  className="w-full h-[100px] flex items-center justify-between cursor-pointer overflow-hidden "
                   key={i.id}
                   onClick={() => {
                     handleSubmit(i);
