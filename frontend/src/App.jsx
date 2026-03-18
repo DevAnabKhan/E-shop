@@ -1,5 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import { ActivationPage, LoginPage, SignupPage, HomePage } from "./Routes";
+import {
+  ActivationPage,
+  LoginPage,
+  SignupPage,
+  HomePage,
+  ProductsPage,
+  BestSellingPage,
+  EventsPage,
+  FAQPage,
+} from "./Routes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -23,7 +32,10 @@ const App = () => {
           path="/activation/:activation_token"
           element={<ActivationPage />}
         />
-
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/best-selling" element={<BestSellingPage />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/faq" element={<FAQPage />} />
         {/* <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/movies/:id" element={<MovieDetails />} />
