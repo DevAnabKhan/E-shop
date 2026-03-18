@@ -28,6 +28,7 @@ const Login = () => {
         navigate("/");
         setEmail("");
         setPassword("");
+        window.location.reload();
       }
     } catch (error) {
       setLoading(false);
