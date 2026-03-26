@@ -28,7 +28,7 @@ const Login = () => {
         navigate("/");
         setEmail("");
         setPassword("");
-        window.location.reload();
+        window.location.reload(true);
       }
     } catch (error) {
       setLoading(false);
