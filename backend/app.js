@@ -14,7 +14,7 @@ app.use(
     credentials: true, // <--- allow cookies to be sent
   }),
 );
-app.use("/", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 if (process.env.NODE_ENV !== "PRODUCTION") {
