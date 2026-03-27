@@ -135,3 +135,14 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
+
+export const logoutUser = catchAsyncErrors(async (req, res, next) => {
+  res.clearCookie("token", {
+    expires: new Date(Date.now()),
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
