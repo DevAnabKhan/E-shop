@@ -9,9 +9,27 @@ import { RxPerson } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineTrackChanges } from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
+import axios from "axios";
+import { server } from "../../server";
+import { toast } from "react-toastify";
 
 const ProfileSidebar = ({ active, setActive }) => {
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const res = await axios.get(`${server}/user/logout`, {
+        withCredentials: true,
+      });
+      if (res.status === 200) {
+        toast.success("Logged out successfully!");
+        window.location.reload(true);
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error(error.response.data.message || "Logout failed!");
+    }
+  };
 
   const menuItems = [
     { id: 1, title: "Profile", icon: RxPerson },
@@ -21,7 +39,7 @@ const ProfileSidebar = ({ active, setActive }) => {
     { id: 5, title: "Track Orders", icon: MdOutlineTrackChanges },
     { id: 6, title: "Payment Methods", icon: AiOutlineCreditCard },
     { id: 7, title: "Address", icon: TbAddressBook },
-    { id: 8, title: "Log Out", icon: AiOutlineLogout },
+    { id: 8, title: "Log Out", icon: AiOutlineLogout, handleLogout },
   ];
   return (
     <div className="w-full bg-white shadow-sm rounded-[10px] p-4 pt-8">
@@ -35,6 +53,7 @@ const ProfileSidebar = ({ active, setActive }) => {
             onClick={() => {
               setActive(item.id);
               if (item.route) navigate(item.route);
+              if (item.handleLogout) return item.handleLogout();
             }}
           >
             <Icon size={20} color={active === item.id ? "red" : ""} />
