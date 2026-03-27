@@ -28,10 +28,10 @@ const ProfileContent = ({ active, setActive }) => {
             <div className="relative">
               <img
                 src={`${backend_url}${user?.avatar?.url}`}
-                className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
+                className="w-37.5 h-37.5 rounded-full object-cover border-[3px] border-[#3ad132]"
                 alt=""
               />
-              <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
+              <div className="w-7.5 h-7.5 bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
                 <AiOutlineCamera />
               </div>
             </div>
@@ -120,7 +120,7 @@ const ProfileContent = ({ active, setActive }) => {
                 </div>
               </div>
               <input
-                className={`w-[250px] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
+                className={`w-62.5 h-10 border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
                 required
                 value="Update"
                 type="submit"
