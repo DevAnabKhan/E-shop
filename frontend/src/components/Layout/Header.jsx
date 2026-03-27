@@ -117,7 +117,7 @@ const Header = ({ activeHeading }) => {
               className={`${styles.section} relative ${styles.noramlFlex} justify-between`}
             >
               <div onClick={() => setDropDown(!dropDown)}>
-                <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000:block">
+                <div className="relative h-15 mt-2.5 w-67.5 hidden 1000:block">
                   <BiMenuAltLeft size={30} className="absolute top-3 left-2 " />
                   <button className="h-full w-full items-center justify-between flex pl-10 bg-white font-sans text-lg font-[500] select-none rounded-t-md">
                     All Categories
@@ -174,8 +174,8 @@ const Header = ({ activeHeading }) => {
                     {isAuthenticated ? (
                       <Link to="/profile">
                         <img
-                          src={`${backend_url}${user.avatar}`}
-                          className="w-[35px] h-[35px] rounded-full"
+                          src={`${backend_url}${user?.avatar?.url}`}
+                          className="w-8.75 h-8.75 rounded-full"
                           alt=""
                         />
                       </Link>
