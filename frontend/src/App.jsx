@@ -17,6 +17,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import store from "./redux/store";
 import { loadUser } from "./redux/actions/user";
+import ProtectedRoute from "./ProtectedRoute";
 
 axios.defaults.withCredentials = true;
 const App = () => {
@@ -39,7 +40,14 @@ const App = () => {
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
         {/* <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/movies/:id" element={<MovieDetails />} />
