@@ -5,6 +5,7 @@ import {
   registerUser,
   loginUser,
   getUser,
+  logoutUser,
 } from "../controller/userController.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -14,5 +15,6 @@ userRouter.post("/create-user", upload.single("file"), registerUser);
 userRouter.post("/activation", activateUserAccount);
 userRouter.post("/login-user", loginUser);
 userRouter.get("/getuser", isAuthenticated, getUser);
+userRouter.get("/logout", isAuthenticated, logoutUser);
 
 export default userRouter;
