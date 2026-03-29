@@ -57,7 +57,9 @@ const ProfileSidebar = ({ active, setActive }) => {
             }}
           >
             <Icon size={20} color={active === item.id ? "red" : ""} />
-            <span className={`pl-3 ${active === item.id ? "text-[red]" : ""}`}>
+            <span
+              className={`800:block hidden pl-3 ${active === item.id ? "text-[red]" : ""}`}
+            >
               {item.title}
             </span>
           </div>
