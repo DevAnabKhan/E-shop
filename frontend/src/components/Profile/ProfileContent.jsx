@@ -40,52 +40,52 @@ const ProfileContent = ({ active, setActive }) => {
           <br />
           <div className="w-full px-5">
             <form action="" onSubmit={handleSubmit} aria-required={true}>
-              <div className="w-full flex pb-3">
-                <div className="w-[50%]">
+              <div className="w-full 800:flex block pb-3">
+                <div className="w-full 800:w-[50%]">
                   <label className="block pb-2" htmlFor="">
                     Full Name
                   </label>
                   <input
                     type="text"
-                    className={`${styles.input} w-[95%]! bg-white border-none`}
+                    className={`${styles.input} w-[95%]! bg-white border-none mb-4 800:mb-0`}
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
-                <div className="w-[50%]">
+                <div className="w-full 800:w-[50%]">
                   <label className="block pb-2" htmlFor="">
                     Email Address
                   </label>
                   <input
                     type="text"
-                    className={`${styles.input} w-[95%]! bg-white border-none`}
+                    className={`${styles.input} w-[95%]! bg-white border-none mb-2 800:mb-0`}
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
-              <div className="w-full flex pb-3">
-                <div className="w-[50%]">
+              <div className="w-full 800:flex block pb-3">
+                <div className="w-full 800:w-[50%]">
                   <label className="block pb-2" htmlFor="">
                     Phone Number
                   </label>
                   <input
                     type="number"
-                    className={`${styles.input} w-[95%]! bg-white border-none`}
+                    className={`${styles.input} w-[95%]! bg-white border-none mb-2 800:mb-0`}
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
-                <div className="w-[50%]">
+                <div className="w-full 800:w-[50%]">
                   <label className="block pb-2" htmlFor="">
                     Zip Code
                   </label>
                   <input
                     type="number"
-                    className={`${styles.input} w-[95%]! bg-white border-none`}
+                    className={`${styles.input} w-[95%]! bg-white border-none mb-1 800:mb-0`}
                     required
                     value={zipCode}
                     onChange={(e) => setZipCode(e.target.value)}
@@ -93,26 +93,26 @@ const ProfileContent = ({ active, setActive }) => {
                 </div>
               </div>
 
-              <div className="w-full flex pb-3">
-                <div className="w-[50%]">
+              <div className="w-full 800:flex block pb-3">
+                <div className="w-full 800:w-[50%]">
                   <label className="block pb-2" htmlFor="">
                     Address 1
                   </label>
                   <input
                     type="text"
-                    className={`${styles.input} w-[95%]! bg-white border-none`}
+                    className={`${styles.input} w-[95%]! bg-white border-none mb-3 800:mb-0`}
                     required
                     value={address1}
                     onChange={(e) => setAddress1(e.target.value)}
                   />
                 </div>
-                <div className="w-[50%]">
+                <div className="w-full 800:w-[50%]">
                   <label className="block pb-2" htmlFor="">
                     Address 2
                   </label>
                   <input
                     type="text"
-                    className={`${styles.input} w-[95%]! bg-white border-none`}
+                    className={`${styles.input} w-[95%]! bg-white border-none mb-4 800:mb-0`}
                     required
                     value={address2}
                     onChange={(e) => setAddress2(e.target.value)}
