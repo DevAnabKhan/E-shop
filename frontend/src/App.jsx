@@ -10,6 +10,10 @@ import {
   FAQPage,
   ProductDetailsPage,
   ProfilePage,
+  ShopCreatePage,
+  SellerActivationPage,
+  ShopLoginPage,
+  ShopHomePage,
 } from "./Routes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,11 +22,14 @@ import { useEffect } from "react";
 import store from "./redux/store";
 import { loadUser } from "./redux/actions/user";
 import ProtectedRoute from "./ProtectedRoute";
+import { loadShop } from "./redux/actions/shop";
+import ShopProtectedRoute from "./ShopProtectedRoute";
 
 axios.defaults.withCredentials = true;
 const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
+    store.dispatch(loadShop());
   }, []);
 
   return (
@@ -35,11 +42,13 @@ const App = () => {
           path="/activation/:activation_token"
           element={<ActivationPage />}
         />
+
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product/:name" element={<ProductDetailsPage />} />
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
+
         <Route
           path="/profile"
           element={
@@ -47,6 +56,30 @@ const App = () => {
               <ProfilePage />
             </ProtectedRoute>
           }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* shop routes*/}
+        <Route path="/shop-create" element={<ShopCreatePage />} />
+        <Route path="/shop-login" element={<ShopLoginPage />} />
+        <Route
+          path="/shop/:id"
+          element={
+            <ShopProtectedRoute>
+              <ShopHomePage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/seller/activation/:activation_token"
+          element={<SellerActivationPage />}
         />
         {/* <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
