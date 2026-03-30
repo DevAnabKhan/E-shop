@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { error } from "./middleware/error.js";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoute.js";
+import shopRouter from "./routes/shopRoute.js";
 import cors from "cors";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/v2/user", userRouter);
+app.use("/api/v2/shop", shopRouter);
 
 app.use(error);
 export default app;
