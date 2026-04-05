@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoute.js";
 import shopRouter from "./routes/shopRoute.js";
 import cors from "cors";
+import productRoute from "./routes/productRoute.js";
 
 const app = express();
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 
 app.use("/api/v2/user", userRouter);
 app.use("/api/v2/shop", shopRouter);
+app.use("/api/v2/product", productRoute);
 
 app.use(error);
 export default app;
