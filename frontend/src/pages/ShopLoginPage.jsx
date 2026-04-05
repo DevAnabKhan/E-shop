@@ -14,9 +14,9 @@ const ShopLoginPage = () => {
   useEffect(() => {
     if (isShopAuthenticated && shop?._id) {
       console.log("Shop authenticated, navigating...");
-      navigate(`/shop/${shop._id}`);
+      navigate("/dashboard");
     }
-  }, [isShopAuthenticated, shop, navigate]);
+  }, [isShopAuthenticated, shop]);
   return (
     <div>
       <ShopLogin />
