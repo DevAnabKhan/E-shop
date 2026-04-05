@@ -5,7 +5,7 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     isAuthenticated: false,
-    loading: false,
+    loading: true,
     user: null,
     error: null,
   },
