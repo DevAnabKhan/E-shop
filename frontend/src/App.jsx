@@ -14,6 +14,9 @@ import {
   SellerActivationPage,
   ShopLoginPage,
   ShopHomePage,
+  ShopDashboardPage,
+  ShopCreateProductPage,
+  ShopAllProducts,
 } from "./Routes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,9 +24,9 @@ import axios from "axios";
 import { useEffect } from "react";
 import store from "./redux/store";
 import { loadUser } from "./redux/actions/user";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./protectedRoutes/ProtectedRoute";
 import { loadShop } from "./redux/actions/shop";
-import ShopProtectedRoute from "./ShopProtectedRoute";
+import ShopProtectedRoute from "./protectedRoutes/ShopProtectedRoute";
 
 axios.defaults.withCredentials = true;
 const App = () => {
@@ -74,6 +77,30 @@ const App = () => {
           element={
             <ShopProtectedRoute>
               <ShopHomePage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ShopProtectedRoute>
+              <ShopDashboardPage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-create-product"
+          element={
+            <ShopProtectedRoute>
+              <ShopCreateProductPage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-products"
+          element={
+            <ShopProtectedRoute>
+              <ShopAllProducts />
             </ShopProtectedRoute>
           }
         />
