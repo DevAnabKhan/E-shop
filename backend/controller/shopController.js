@@ -143,7 +143,7 @@ export const getShop = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const logoutShop = catchAsyncErrors(async (req, res, next) => {
-  res.clearCookie("seller-token", {
+  res.clearCookie("seller_token", {
     expires: new Date(Date.now()),
   });
 
