@@ -5,7 +5,7 @@ const shopSlice = createSlice({
   name: "shop",
   initialState: {
     isShopAuthenticated: false,
-    shopLoading: false,
+    shopLoading: true,
     shop: null,
     error: null,
   },
@@ -23,13 +23,24 @@ const shopSlice = createSlice({
       state.shopLoading = false;
       state.error = action.payload;
     },
+    shopLogout: (state) => {
+      state.isShopAuthenticated = false;
+      state.shop = null;
+      state.shopLoading = false;
+      state.error = null;
+    },
     clearError: (state) => {
       state.error = null;
     },
   },
 });
 
-export const { loadShopRequest, loadShopSuccess, loadShopFail, clearError } =
-  shopSlice.actions;
+export const {
+  loadShopRequest,
+  loadShopSuccess,
+  loadShopFail,
+  clearError,
+  shopLogout,
+} = shopSlice.actions;
 
 export const shopReducer = shopSlice.reducer;
