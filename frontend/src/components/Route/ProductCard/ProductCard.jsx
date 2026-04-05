@@ -20,7 +20,7 @@ const ProductCard = ({ data }) => {
   const product_name = d.replace(/\s+/g, "-");
   return (
     <>
-      <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
+      <div className="w-full h-92.5 bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
         <div className="flex justify-center"></div>
         <Link to={`/product/${product_name}`}>
           <img
