@@ -15,6 +15,6 @@ shopRouter.post("/create-shop", upload.single("file"), registerSeller);
 shopRouter.post("/shop-activation", activateShopAccount);
 shopRouter.post("/login-shop", loginShop);
 shopRouter.get("/get-shop", isShopAuthenticated, getShop);
-shopRouter.post("/logout-shop", logoutShop);
+shopRouter.get("/logout-shop", logoutShop);
 
 export default shopRouter;
