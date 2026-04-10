@@ -142,6 +142,20 @@ export const getShop = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+export const getShopInfo = catchAsyncErrors(async (req, res, next) => {
+  const shop = await Shop.findById(req.params.id);
+
+  if (!shop) {
+    return next(new ErrorHandler("Shop doestn't exists", 400));
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Success",
+    shop,
+  });
+});
+
 export const logoutShop = catchAsyncErrors(async (req, res, next) => {
   res.clearCookie("seller_token", {
     expires: new Date(Date.now()),
