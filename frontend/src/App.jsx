@@ -17,6 +17,10 @@ import {
   ShopDashboardPage,
   ShopCreateProductPage,
   ShopAllProducts,
+  ShopCreateEventPage,
+  ShopAllEventsPage,
+  ShopAllCouponsPage,
+  ShopPreviewPage,
 } from "./Routes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,12 +31,16 @@ import { loadUser } from "./redux/actions/user";
 import ProtectedRoute from "./protectedRoutes/ProtectedRoute";
 import { loadShop } from "./redux/actions/shop";
 import ShopProtectedRoute from "./protectedRoutes/ShopProtectedRoute";
+import { getAllProductsForUser } from "./redux/actions/product";
+import { getAllEventsForUser } from "./redux/actions/event";
 
 axios.defaults.withCredentials = true;
 const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
     store.dispatch(loadShop());
+    store.dispatch(getAllProductsForUser());
+    store.dispatch(getAllEventsForUser());
   }, []);
 
   return (
@@ -68,6 +76,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
 
         {/* shop routes*/}
         <Route path="/shop-create" element={<ShopCreatePage />} />
@@ -101,6 +110,38 @@ const App = () => {
           element={
             <ShopProtectedRoute>
               <ShopAllProducts />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-create-event"
+          element={
+            <ShopProtectedRoute>
+              <ShopCreateEventPage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-events"
+          element={
+            <ShopProtectedRoute>
+              <ShopAllEventsPage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-coupons"
+          element={
+            <ShopProtectedRoute>
+              <ShopAllCouponsPage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-preview"
+          element={
+            <ShopProtectedRoute>
+              <ShopPreviewPage />
             </ShopProtectedRoute>
           }
         />
