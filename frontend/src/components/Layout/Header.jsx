@@ -19,6 +19,7 @@ import Wishlist from "../Wishlist/Wishlist.jsx";
 import { RxCross1 } from "react-icons/rx";
 
 const Header = ({ activeHeading }) => {
+  const { allUserProducts } = useSelector((state) => state.product);
   const { isAuthenticated, user, loading } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
@@ -35,9 +36,11 @@ const Header = ({ activeHeading }) => {
     if (term === "") {
       setSearchData(null);
     } else {
-      const filteredProducts = productData.filter((product) =>
-        product.name.toLowerCase().includes(term.toLowerCase()),
-      );
+      const filteredProducts =
+        allUserProducts &&
+        allUserProducts.filter((product) =>
+          product.name.toLowerCase().includes(term.toLowerCase()),
+        );
 
       setSearchData(filteredProducts);
     }
@@ -56,7 +59,7 @@ const Header = ({ activeHeading }) => {
       {loading ? null : (
         <>
           <div className={styles.section}>
-            <div className="hidden 800:h-[50px] 800:my-[20px] 800:flex items-center justify-between">
+            <div className="hidden 800:h-12.5 800:my-5 800:flex items-center justify-between">
               <div>
                 <Link to="/">
                   <img
@@ -89,9 +92,9 @@ const Header = ({ activeHeading }) => {
                         <Link key={index} to={`/product/${product_name}`}>
                           <div className="w-full items-center flex py-2">
                             <img
-                              src={i.image_Url[0].url}
+                              src={`${backend_url}/uploads/${i.images[0]?.url}`}
                               alt=""
-                              className="w-10 h-10 mr-[10px]"
+                              className="w-10 h-10 mr-2.5"
                             />
                             <h1>{i.name}</h1>
                           </div>
