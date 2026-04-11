@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import styles from "../../../styles/styles";
@@ -11,29 +11,69 @@ import {
   AiOutlineStar,
 } from "react-icons/ai";
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard";
+import { backend_url, server } from "../../../server";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addtoWishlist,
+  removefromWishlist,
+} from "../../../redux/actions/wishlist";
+import { addtoCart } from "../../../redux/actions/cart";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ data }) => {
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { wishlist } = useSelector((state) => state.wishlist);
+  const { cart } = useSelector((state) => state.cart);
 
-  const d = data.name;
-  const product_name = d.replace(/\s+/g, "-");
+  const addToCartHandler = (id) => {
+    const isItemExist = cart.find((i) => i._id === id);
+    if (isItemExist) {
+      toast.error("Item already in cart");
+    } else {
+      if (data.stock < 1) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: 1 };
+        dispatch(addtoCart(cartData));
+        toast.success("Item added to cart successfully");
+      }
+    }
+  };
+  const removeFromWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(removefromWishlist(data._id));
+  };
+
+  const addToWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(addtoWishlist(data));
+  };
+
+  useEffect(() => {
+    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [wishlist]);
   return (
     <>
       <div className="w-full h-92.5 bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
         <div className="flex justify-center"></div>
-        <Link to={`/product/${product_name}`}>
+        <Link to={`/product/${data._id}`}>
           <img
-            src={data.image_Url[0].url}
+            src={`${backend_url}/uploads/${data.images[0]?.url}`}
             alt=""
-            className="w-full h-[170px] object-contain"
+            className="w-full h-42.5 object-contain"
           />
         </Link>
-        <Link to="/">
+        <Link to={`/shop/preview/${data?.shop._id}`}>
           <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
         </Link>
-        <Link to={`/product/${product_name}`}>
-          <h4 className="pb-3 font-[500]">
+        <Link to={`/product/${data._id}`}>
+          <h4 className="pb-3 font-medium">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>
           <div className="flex">
@@ -64,16 +104,19 @@ const ProductCard = ({ data }) => {
             />
           </div>
           <div className="py-2 flex items-center justify-between">
-            <div className="flex">
+            <div className="flex items-center gap-2">
               <h5 className={`${styles.productDiscountPrice}`}>
-                {data.price === 0 ? data.price : data.discount_price}$
+                ${data.discountPrice}
               </h5>
-              <h4 className={`${styles.price}`}>
-                {data.price ? data.price + " $" : null}
-              </h4>
+
+              {data.originalPrice && (
+                <h4 className={`${styles.price} line-through text-red-500`}>
+                  ${data.originalPrice}
+                </h4>
+              )}
             </div>
             <span className=" text-[17px] font-[400] text-[#68d284]">
-              {data.total_sell} sold
+              {data.total_sell || 0} sold
             </span>
           </div>
         </Link>
@@ -83,9 +126,7 @@ const ProductCard = ({ data }) => {
               size={22}
               className="cursor-pointer absolute right-2 top-5 "
               color={click ? "red" : "#333"}
-              onClick={() => {
-                setClick(!click);
-              }}
+              onClick={() => removeFromWishlistHandler(data)}
               title="Remove from wishlist"
             />
           ) : (
@@ -93,9 +134,7 @@ const ProductCard = ({ data }) => {
               size={22}
               className="cursor-pointer absolute right-2 top-5 "
               color={click ? "red" : "#333"}
-              onClick={() => {
-                setClick(!click);
-              }}
+              onClick={() => addToWishlistHandler(data)}
               title="Add to wishlist"
             />
           )}
@@ -114,9 +153,7 @@ const ProductCard = ({ data }) => {
             size={25}
             className="cursor-pointer absolute right-2 top-24"
             color={"#444"}
-            onClick={() => {
-              setClick(!click);
-            }}
+            onClick={() => addToCartHandler(data._id)}
             title="Add to cart"
           />
 
