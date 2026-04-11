@@ -59,7 +59,7 @@ const DashboardSidebar = ({ active, setActive }) => {
       id: 9,
       title: "Discount Codes",
       icon: AiOutlineGift,
-      route: "/dashboard/coupons",
+      route: "/dashboard-coupons",
     },
     {
       id: 10,
