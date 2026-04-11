@@ -10,7 +10,7 @@ import { backend_url } from "../../../server";
 const DashboardHeader = () => {
   const { shop } = useSelector((state) => state.shop);
   return (
-    <div className="w-full h-20 bg-white sticky shadow top-0 left-0 z-30 flex items-center justify-between px-4  ">
+    <div className="w-full min-w-0 h-20 bg-white sticky shadow top-0 left-0 z-30 flex items-center justify-between px-4">
       <div>
         <Link to="/dashboard">
           <img
