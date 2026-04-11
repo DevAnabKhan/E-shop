@@ -6,16 +6,18 @@ import { useSearchParams } from "react-router-dom";
 import { productData } from "../static/data";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 import Footer from "../components/Layout/Footer";
+import { useSelector } from "react-redux";
 
 const BestSellingPage = () => {
   const [data, setData] = useState([]);
+  const { allUserProducts } = useSelector((state) => state.product);
 
   useEffect(() => {
-    const d =
-      productData && productData.sort((a, b) => b.total_sell - a.total_sell);
+    const d = allUserProducts && allUserProducts;
+    const firstFive = d.slice(0, 5);
     setData(d);
-    //window.scrollTo(0,0);
-  });
+  }, []);
+
   return (
     <div>
       <Header activeHeading={2} />
