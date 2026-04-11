@@ -20,6 +20,8 @@ import { RxCross1 } from "react-icons/rx";
 
 const Header = ({ activeHeading }) => {
   const { allUserProducts } = useSelector((state) => state.product);
+  const { cart } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
   const { isAuthenticated, user, loading } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
@@ -86,10 +88,8 @@ const Header = ({ activeHeading }) => {
                 {searchData && searchData.length !== 0 && (
                   <div className="absolute max-h-[30vh] overflow-y-auto bg-slate-50 shadow-md z-10 p-4 w-full">
                     {searchData.map((i, index) => {
-                      const product_name = i.name.replace(/\s+/g, "-");
-
                       return (
-                        <Link key={index} to={`/product/${product_name}`}>
+                        <Link key={index} to={`/product/${i._id}`}>
                           <div className="w-full items-center flex py-2">
                             <img
                               src={`${backend_url}/uploads/${i.images[0]?.url}`}
@@ -153,7 +153,7 @@ const Header = ({ activeHeading }) => {
                     <AiOutlineHeart size={30} color="rgb(255 255 255 / 83%)" />
 
                     <span className="absolute -top-1 -right-1 rounded-full bg-[#3bc177] w-4 h-4 text-white text-[10px] flex items-center justify-center">
-                      0
+                      {wishlist && wishlist.length}
                     </span>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ const Header = ({ activeHeading }) => {
                     />
 
                     <span className="absolute -top-1 -right-1 rounded-full bg-[#3bc177] w-4 h-4 text-white text-[10px] flex items-center justify-center">
-                      0
+                      {cart && cart.length}
                     </span>
                   </div>
                 </div>
@@ -228,7 +228,7 @@ const Header = ({ activeHeading }) => {
                 <div className="relative mr-5">
                   <AiOutlineShoppingCart size={30} />
                   <span className="absolute -top-1 -right-1 rounded-full bg-[#3bc177] w-4 h-4 text-white text-[10px] flex items-center justify-center">
-                    0
+                    {cart && cart.length}
                   </span>
                 </div>
               </div>
@@ -241,7 +241,7 @@ const Header = ({ activeHeading }) => {
                       <div className="relative mr-3.75">
                         <AiOutlineHeart size={30} className="mt-5 ml-3" />
                         <span className="absolute -top-1 -right-1 rounded-full bg-[#3bc177] w-4 h-4 text-white text-[10px] flex items-center justify-center">
-                          0
+                          {wishlist && wishlist.length}
                         </span>
                       </div>
                     </div>
