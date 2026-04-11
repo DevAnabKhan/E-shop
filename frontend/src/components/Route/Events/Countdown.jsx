@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-function calculateTimeLeft() {
-  const difference = +new Date("2026-12-31") - +new Date(); // ✅ future date
+function calculateTimeLeft(data) {
+  const difference = +new Date(data.Finish_Date) - +new Date(); // ✅ future date
   let timeLeft = {};
 
   if (difference > 0) {
@@ -15,16 +15,15 @@ function calculateTimeLeft() {
   return timeLeft;
 }
 
-const Countdown = () => {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+const Countdown = ({ data }) => {
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(data));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      // ✅ setInterval not setTimeout
-      setTimeLeft(calculateTimeLeft());
+      setTimeLeft(calculateTimeLeft(data));
     }, 1000);
     return () => clearInterval(timer); // ✅ cleanup
-  }, []); // ✅ run once
+  }, []);
 
   const timerComponents = Object.keys(timeLeft).map((interval) => {
     if (!timeLeft[interval]) return null;
