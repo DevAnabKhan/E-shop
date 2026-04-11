@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import { productData } from "../../../static/data";
 import styles from "../../../styles/styles";
 import ProductCard from "../ProductCard/ProductCard";
+import { useDispatch, useSelector } from "react-redux";
 
 const BestDeals = () => {
   const [data, setData] = useState([]);
-
+  const { allUserProducts } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
+  console.log(allUserProducts);
   useEffect(() => {
-    const d =
-      productData && productData.sort((a, b) => b.total_sell - a.total_sell);
+    const d = allUserProducts && allUserProducts;
     const firstFive = d.slice(0, 5);
+    console.log(data);
     setData(firstFive);
   }, []);
 
@@ -19,7 +22,7 @@ const BestDeals = () => {
         <div className={`${styles.heading}`}>
           <h1>Best Deals</h1>
         </div>
-        <div className="grid grid-cols-1 gap-[20px] md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12 border-0">
+        <div className="grid grid-cols-1 gap-5 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12 border-0">
           {data && data.map((i, index) => <ProductCard data={i} key={index} />)}
         </div>
       </div>
