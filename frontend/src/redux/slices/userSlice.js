@@ -8,6 +8,7 @@ const userSlice = createSlice({
     loading: true,
     user: null,
     error: null,
+    updateUserLoading: false,
   },
   reducers: {
     loadUserRequest: (state) => {
@@ -23,13 +24,31 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateUserRequest: (state) => {
+      state.updateUserLoading = true;
+    },
+    updateUserSuccess: (state, action) => {
+      state.updateUserLoading = false;
+      state.user = action.payload;
+    },
+    updateUserFail: (state, action) => {
+      state.updateUserLoading = false;
+      state.error = action.payload;
+    },
     clearError: (state) => {
       state.error = null;
     },
   },
 });
 
-export const { loadUserRequest, loadUserSuccess, loadUserFail, clearError } =
-  userSlice.actions;
+export const {
+  loadUserRequest,
+  loadUserSuccess,
+  loadUserFail,
+  clearError,
+  updateUserRequest,
+  updateUserFail,
+  updateUserSuccess,
+} = userSlice.actions;
 
 export const userReducer = userSlice.reducer;
