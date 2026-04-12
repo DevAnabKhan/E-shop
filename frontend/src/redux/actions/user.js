@@ -5,6 +5,9 @@ import {
   loadUserRequest,
   loadUserSuccess,
   loadUserFail,
+  updateUserRequest,
+  updateUserSuccess,
+  updateUserFail,
 } from "../slices/userSlice";
 
 export const loadUser = () => async (dispatch) => {
@@ -20,3 +23,29 @@ export const loadUser = () => async (dispatch) => {
     );
   }
 };
+
+export const updateUserInfo =
+  (email, password, phoneNumber, name) => async (dispatch) => {
+    try {
+      dispatch(updateUserRequest());
+      console.log("data comming", email, phoneNumber, password, name);
+      const { data } = await axios.put(
+        `${server}/user/update-user-info`,
+        {
+          email,
+          password,
+          phoneNumber,
+          name,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      dispatch(updateUserSuccess(data.user));
+    } catch (error) {
+      dispatch(
+        updateUserFail(error.response?.data?.message || "Something went wrong"),
+      );
+    }
+  };
