@@ -9,6 +9,9 @@ import {
   fetchAllProductsFail,
   fetchAllProductsRequest,
   fetchAllProductsSuccess,
+  getAllProductsForUserFailed,
+  getAllProductsForUserRequest,
+  getAllProductsForUserSuccess,
   loadProductFail,
   loadProductRequest,
   loadProductSuccess,
@@ -37,12 +40,13 @@ export const createProduct = (newForm) => async (dispatch) => {
 
 export const getAllProduct = (id) => async (dispatch) => {
   try {
+    console.log("id", id);
     dispatch(fetchAllProductsRequest());
 
     const { data } = await axios.get(
       `${server}/product/get-all-products-shop/${id}`,
     );
-    console.log(data);
+    console.log("data commming", data);
     dispatch(fetchAllProductsSuccess(data.products));
   } catch (error) {
     dispatch(
@@ -63,6 +67,22 @@ export const deleteProduct = (id) => async (dispatch) => {
   } catch (error) {
     dispatch(
       deleteProductFail(
+        error.response?.data?.message || "Something went wrong",
+      ),
+    );
+  }
+};
+
+export const getAllProductsForUser = () => async (dispatch) => {
+  try {
+    dispatch(getAllProductsForUserRequest());
+
+    const { data } = await axios.get(`${server}/product/get-all-products`);
+    console.log(data);
+    dispatch(getAllProductsForUserSuccess(data.products));
+  } catch (error) {
+    dispatch(
+      getAllProductsForUserFailed(
         error.response?.data?.message || "Something went wrong",
       ),
     );
