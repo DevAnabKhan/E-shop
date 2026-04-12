@@ -146,3 +146,92 @@ export const logoutUser = catchAsyncErrors(async (req, res, next) => {
     message: "Logged out successfully",
   });
 });
+
+export const updateUserInfo = catchAsyncErrors(async (req, res, next) => {
+  const { name, email, password, phoneNumber } = req.body;
+
+  // ✅ Find by authenticated user's ID, not by email
+  const user = await User.findById(req.user.id).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 400));
+  }
+
+  const isPasswordValid = await user.comparePassword(password);
+  if (!isPasswordValid) {
+    return next(
+      new ErrorHandler("Please provide the correct information", 400),
+    );
+  }
+
+  // ✅ Now safely update all fields
+  user.name = name;
+  user.email = email;
+  user.phoneNumber = phoneNumber;
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+// export const updateUserInfo = catchAsyncErrors(async (req, res, next) => {
+//   console.log("req.body:", req.body);
+//   const { name, email, password, phoneNumber } = req.body;
+//   console.log("phonenumber", phoneNumber);
+//   const user = await User.findOne({ email }).select("+password");
+
+//   if (!user) {
+//     console.log("no user exist error ");
+//     return next(new ErrorHandler("User not exists", 400));
+//   }
+
+//   const isPasswordValid = await user.comparePassword(password);
+
+//   if (!isPasswordValid) {
+//     return next(
+//       new ErrorHandler("Please provide the correct information", 400),
+//     );
+//   }
+
+//   user.name = name;
+//   user.email = email;
+//   user.phoneNumber = phoneNumber;
+
+//   await user.save();
+
+//   res.status(200).json({
+//     success: true,
+//     user,
+//   });
+// });
+
+export const updateAvatar = catchAsyncErrors(async (req, res, next) => {
+  const existUser = await User.findById(req.user.id);
+
+  // ✅ Correctly delete old avatar using the object structure
+  if (existUser.avatar && existUser.avatar.public_id) {
+    const existAvatarPath = `uploads/${existUser.avatar.public_id}`;
+    if (fs.existsSync(existAvatarPath)) {
+      fs.unlinkSync(existAvatarPath);
+    }
+  }
+
+  // ✅ Save with same structure as register/login
+  const fileUrl = {
+    public_id: req.file.filename,
+    url: `/uploads/${req.file.filename}`,
+  };
+
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { avatar: fileUrl },
+    { new: true },
+  );
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
