@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { backend_url } from "../../server";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { backend_url, server } from "../../server";
+import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineCamera, AiOutlineDelete } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
@@ -8,18 +8,58 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { MdTrackChanges } from "react-icons/md";
+import { updateUserInfo } from "../../redux/actions/user";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const ProfileContent = ({ active, setActive }) => {
-  const { user } = useSelector((state) => state.user);
+  const { user, error } = useSelector((state) => state.user);
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [zipCode, setZipCode] = useState("");
-  const [address1, setAddress1] = useState(user?.address || "");
-  const [address2, setAddress2] = useState(user?.address || "");
+  const [phone, setPhone] = useState((user && user?.phoneNumber) || "");
+  const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("All Data", email, password, phone, name);
+    dispatch(updateUserInfo(email, password, phone, name));
   };
+
+  const handleImage = async (e) => {
+    const file = e.target.files[0];
+    console.log("file:", file);
+    setAvatar(file);
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    console.log("formData", formData);
+    try {
+      const res = await axios.put(`${server}/user/update-avatar`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      console.log("response", res);
+      if (res.data.success === true) {
+        window.location.reload();
+      }
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message || // from backend
+        error?.message || // axios default message
+        "Something went wrong"; // fallback
+
+      toast.error(msg);
+    }
+  };
+
   return (
     <div className="w-full ">
       {active === 1 && (
@@ -32,7 +72,16 @@ const ProfileContent = ({ active, setActive }) => {
                 alt=""
               />
               <div className="w-7.5 h-7.5 bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
-                <AiOutlineCamera />
+                <input
+                  type="file"
+                  id="image"
+                  className="hidden"
+                  onChange={handleImage}
+                />
+                <label htmlFor="image" className="cursor-pointer">
+                  {" "}
+                  <AiOutlineCamera />
+                </label>
               </div>
             </div>
           </div>
@@ -81,44 +130,18 @@ const ProfileContent = ({ active, setActive }) => {
                 </div>
                 <div className="w-full 800:w-[50%]">
                   <label className="block pb-2" htmlFor="">
-                    Zip Code
+                    Password
                   </label>
                   <input
-                    type="number"
-                    className={`${styles.input} w-[95%]! bg-white border-none mb-1 800:mb-0`}
+                    type="text"
+                    className={`${styles.input} w-[95%]! bg-white border-none mb-2 800:mb-0`}
                     required
-                    value={zipCode}
-                    onChange={(e) => setZipCode(e.target.value)}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div className="w-full 800:flex block pb-3">
-                <div className="w-full 800:w-[50%]">
-                  <label className="block pb-2" htmlFor="">
-                    Address 1
-                  </label>
-                  <input
-                    type="text"
-                    className={`${styles.input} w-[95%]! bg-white border-none mb-3 800:mb-0`}
-                    required
-                    value={address1}
-                    onChange={(e) => setAddress1(e.target.value)}
-                  />
-                </div>
-                <div className="w-full 800:w-[50%]">
-                  <label className="block pb-2" htmlFor="">
-                    Address 2
-                  </label>
-                  <input
-                    type="text"
-                    className={`${styles.input} w-[95%]! bg-white border-none mb-4 800:mb-0`}
-                    required
-                    value={address2}
-                    onChange={(e) => setAddress2(e.target.value)}
-                  />
-                </div>
-              </div>
               <input
                 className={`w-62.5 h-10 border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
                 required
