@@ -6,6 +6,8 @@ import {
   loginUser,
   getUser,
   logoutUser,
+  updateUserInfo,
+  updateAvatar,
 } from "../controller/userController.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -16,5 +18,12 @@ userRouter.post("/activation", activateUserAccount);
 userRouter.post("/login-user", loginUser);
 userRouter.get("/getuser", isAuthenticated, getUser);
 userRouter.get("/logout", isAuthenticated, logoutUser);
+userRouter.put("/update-user-info", isAuthenticated, updateUserInfo);
+userRouter.put(
+  "/update-avatar",
+  isAuthenticated,
+  upload.single("file"),
+  updateAvatar,
+);
 
 export default userRouter;
