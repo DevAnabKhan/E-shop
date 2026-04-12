@@ -15,6 +15,9 @@ const productSlice = createSlice({
     deleteError: false,
     deleteLoading: false,
     message: null,
+    userProductError: null,
+    allUserProducts: [],
+    isUserProductsLoading: false,
   },
   reducers: {
     loadProductRequest: (state) => {
@@ -56,6 +59,19 @@ const productSlice = createSlice({
       state.deleteLoading = false;
       state.deleteError = action.payload;
     },
+
+    //-----for user
+    getAllProductsForUserRequest: (state) => {
+      state.isUserProductsLoading = true;
+    },
+    getAllProductsForUserSuccess: (state, action) => {
+      state.isUserProductsLoading = false;
+      state.allUserProducts = action.payload;
+    },
+    getAllProductsForUserFailed: (state, action) => {
+      state.isUserProductsLoading = false;
+      state.userProductError = action.payload;
+    },
     clearError: (state) => {
       state.error = null;
     },
@@ -72,7 +88,9 @@ export const {
   deleteProductFail,
   deleteProductRequest,
   deleteProductSuccess,
-
+  getAllProductsForUserRequest,
+  getAllProductsForUserSuccess,
+  getAllProductsForUserFailed,
   clearError,
 } = productSlice.actions;
 
