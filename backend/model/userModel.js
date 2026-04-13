@@ -49,11 +49,9 @@ const userSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
-      required: true,
     },
     url: {
       type: String,
-      required: true,
     },
   },
   createdAt: {
@@ -65,12 +63,27 @@ const userSchema = new mongoose.Schema({
 });
 
 //  Hash password
-userSchema.pre("save", async function (next) {
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) {
+//     next();
+//   }
+
+//   this.password = await bcrypt.hash(this.password, 10);
+// });
+
+userSchema.pre("save", async function () {
+  console.log("pre save hook hit");
+  console.log("isModified password:", this.isModified("password"));
+  console.log("password value:", this.password);
+
   if (!this.isModified("password")) {
-    next();
+    console.log("password not modified - skipping hash");
+    return;
   }
 
+  console.log("hashing password...");
   this.password = await bcrypt.hash(this.password, 10);
+  console.log("password hashed successfully");
 });
 
 // jwt token
