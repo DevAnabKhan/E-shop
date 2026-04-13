@@ -15,6 +15,11 @@ import ShopHomePage from "./pages/ShopHomePage";
 import ShopDashboardPage from "./pages/ShopDashboardPage";
 import ShopCreateProductPage from "./pages/ShopCreateProductPage";
 import ShopAllProducts from "./pages/ShopAllProducts";
+import ShopCreateEventPage from "./pages/ShopCreateEventPage";
+import ShopAllEventsPage from "./pages/ShopAllEventsPage";
+import ShopAllCouponsPage from "./pages/ShopAllCouponsPage";
+import ShopPreviewPage from "./pages/ShopPreviewPage";
+
 export {
   LoginPage,
   SignupPage,
@@ -33,4 +38,8 @@ export {
   ShopDashboardPage,
   ShopCreateProductPage,
   ShopAllProducts,
+  ShopCreateEventPage,
+  ShopAllEventsPage,
+  ShopAllCouponsPage,
+  ShopPreviewPage,
 };
