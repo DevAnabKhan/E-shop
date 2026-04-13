@@ -8,6 +8,8 @@ import {
   logoutUser,
   updateUserInfo,
   updateAvatar,
+  updateUserAddress,
+  deleteUserAddress,
 } from "../controller/userController.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -24,6 +26,12 @@ userRouter.put(
   isAuthenticated,
   upload.single("file"),
   updateAvatar,
+);
+userRouter.put("/update-user-addresses", isAuthenticated, updateUserAddress);
+userRouter.delete(
+  "/delete-user-address/:id",
+  isAuthenticated,
+  deleteUserAddress,
 );
 
 export default userRouter;
