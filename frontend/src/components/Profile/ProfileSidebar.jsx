@@ -6,6 +6,7 @@ import {
 } from "react-icons/ai";
 import { HiOutlineReceiptRefund, HiOutlineShoppingBag } from "react-icons/hi";
 import { RxPerson } from "react-icons/rx";
+import { RiLockPasswordLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineTrackChanges } from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
@@ -37,7 +38,7 @@ const ProfileSidebar = ({ active, setActive }) => {
     { id: 3, title: "Refunds", icon: HiOutlineReceiptRefund },
     { id: 4, title: "Inbox", icon: AiOutlineMessage, route: "/inbox" },
     { id: 5, title: "Track Orders", icon: MdOutlineTrackChanges },
-    { id: 6, title: "Payment Methods", icon: AiOutlineCreditCard },
+    { id: 6, title: "Change Password", icon: RiLockPasswordLine },
     { id: 7, title: "Address", icon: TbAddressBook },
     { id: 8, title: "Log Out", icon: AiOutlineLogout, handleLogout },
   ];
