@@ -147,65 +147,70 @@ export const logoutUser = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-export const updateUserInfo = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password, phoneNumber } = req.body;
-
-  // ✅ Find by authenticated user's ID, not by email
-  const user = await User.findById(req.user.id).select("+password");
-
-  if (!user) {
-    return next(new ErrorHandler("User not found", 400));
-  }
-
-  const isPasswordValid = await user.comparePassword(password);
-  if (!isPasswordValid) {
-    return next(
-      new ErrorHandler("Please provide the correct information", 400),
-    );
-  }
-
-  // ✅ Now safely update all fields
-  user.name = name;
-  user.email = email;
-  user.phoneNumber = phoneNumber;
-
-  await user.save();
-
-  res.status(200).json({
-    success: true,
-    user,
-  });
-});
 // export const updateUserInfo = catchAsyncErrors(async (req, res, next) => {
-//   console.log("req.body:", req.body);
 //   const { name, email, password, phoneNumber } = req.body;
-//   console.log("phonenumber", phoneNumber);
-//   const user = await User.findOne({ email }).select("+password");
+// console
+//   // ✅ Find by authenticated user's ID, not by email
+//   const user = await User.findById(req.user.id).select("+password");
 
 //   if (!user) {
-//     console.log("no user exist error ");
-//     return next(new ErrorHandler("User not exists", 400));
+//     return next(new ErrorHandler("User not found", 400));
 //   }
 
 //   const isPasswordValid = await user.comparePassword(password);
-
 //   if (!isPasswordValid) {
 //     return next(
 //       new ErrorHandler("Please provide the correct information", 400),
 //     );
 //   }
 
+//   // ✅ Now safely update all fields
 //   user.name = name;
 //   user.email = email;
 //   user.phoneNumber = phoneNumber;
 
-//   await user.save();
+//   await user.save({ validateBeforeSave: false });
 
 //   res.status(200).json({
 //     success: true,
 //     user,
 //   });
 // });
+
+export const updateUserInfo = catchAsyncErrors(async (req, res, next) => {
+  console.log("=== updateUserInfo hit ===");
+  const { name, email, password, phoneNumber } = req.body;
+  console.log("received:", {
+    name,
+    email,
+    phoneNumber,
+    passwordProvided: !!password,
+  });
+
+  const user = await User.findById(req.user.id).select("+password");
+  console.log("user fetched:", user?._id);
+  console.log("stored password:", user?.password);
+
+  const isPasswordValid = await user.comparePassword(password);
+  console.log("isPasswordValid:", isPasswordValid);
+
+  if (!isPasswordValid) {
+    return next(
+      new ErrorHandler("Please provide the correct information", 400),
+    );
+  }
+
+  user.name = name;
+  user.email = email;
+  user.phoneNumber = phoneNumber;
+  console.log("fields updated, about to save...");
+  console.log("isModified password before save:", user.isModified("password"));
+
+  await user.save({ validateBeforeSave: false });
+  console.log("saved successfully!");
+
+  res.status(200).json({ success: true, user });
+});
 
 export const updateAvatar = catchAsyncErrors(async (req, res, next) => {
   const existUser = await User.findById(req.user.id);
@@ -234,4 +239,54 @@ export const updateAvatar = catchAsyncErrors(async (req, res, next) => {
     success: true,
     user,
   });
+});
+
+export const updateUserAddress = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  console.log("user found:", user?._id);
+
+  const sameTypeAddress = user.addresses.find(
+    (address) => address.addressType === req.body.addressType,
+  );
+  console.log("sameTypeAddress:", sameTypeAddress); // ← add this
+
+  if (sameTypeAddress) {
+    return next(
+      new ErrorHandler(`${req.body.addressType} address already exists`, 400),
+    );
+  }
+
+  user.addresses.push(req.body);
+  console.log("about to save"); // ← add this
+
+  try {
+    await user.save({ validateBeforeSave: false });
+    console.log("saved successfully"); // ← add this
+  } catch (e) {
+    console.log("SAVE ERROR:", e.message); // ← add this
+  }
+
+  res
+    .status(200)
+    .json({ success: true, message: "User updated successfully", user });
+});
+
+export const deleteUserAddress = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user._id;
+  const addressId = req.params.id;
+  console.log("user found:", userId, addressId);
+  await User.updateOne(
+    {
+      _id: userId,
+    },
+    {
+      $pull: { addresses: { _id: addressId } },
+    },
+  );
+
+  const user = await User.findById(userId);
+
+  res
+    .status(200)
+    .json({ success: true, message: "Address deleted successfully", user });
 });
