@@ -32,3 +32,15 @@ export const isShopAuthenticated = catchAsyncErrors(async (req, res, next) => {
 
   next();
 });
+
+export const isAdminAuthenticated = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new ErrorHandler(`${req.user.role} cannot access this resource!`, 403),
+      );
+    }
+
+    next();
+  };
+};
