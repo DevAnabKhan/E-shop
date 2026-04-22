@@ -166,3 +166,52 @@ export const logoutShop = catchAsyncErrors(async (req, res, next) => {
     message: "Logged out shop successfully",
   });
 });
+
+export const updateShopAvatar = catchAsyncErrors(async (req, res, next) => {
+  const existShop = await Shop.findById(req.shop._id);
+
+  // ✅ Correctly delete old avatar using the object structure
+  if (existShop.avatar && existShop.avatar.public_id) {
+    const existAvatarPath = `uploads/${existShop.avatar.public_id}`;
+    if (fs.existsSync(existAvatarPath)) {
+      fs.unlinkSync(existAvatarPath);
+    }
+  }
+
+  // ✅ Save with same structure as register/login
+  const fileUrl = {
+    public_id: req.file.filename,
+    url: `/uploads/${req.file.filename}`,
+  };
+
+  const shop = await Shop.findByIdAndUpdate(
+    req.shop._id,
+    { avatar: fileUrl },
+    { new: true },
+  );
+
+  res.status(200).json({
+    success: true,
+    shop,
+  });
+});
+
+export const updateShopInfo = catchAsyncErrors(async (req, res, next) => {
+  const { name, description, address, phoneNumber, zipCode } = req.body;
+
+  const shop = await Shop.findById(req.shop._id);
+
+  if (!shop) {
+    return next(new ErrorHandler("Shop not found", 400));
+  }
+
+  shop.name = name;
+  shop.description = description;
+  shop.address = address;
+  shop.zipCode = Number(zipCode); // ✅ convert to number
+  shop.phoneNumber = Number(phoneNumber); // ✅ convert to number
+
+  await shop.save({ validateBeforeSave: false });
+
+  res.status(200).json({ success: true, shop });
+});
