@@ -290,3 +290,41 @@ export const deleteUserAddress = catchAsyncErrors(async (req, res, next) => {
     .status(200)
     .json({ success: true, message: "Address deleted successfully", user });
 });
+
+export const updateUserPassword = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user.id;
+
+  const user = await User.findById(userId).select("+password");
+
+  const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Existing password is incorrect ", 400));
+  }
+
+  if (req.body.newPassword !== req.body.confirmPassword) {
+    return next(
+      new ErrorHandler(
+        "Existing password doesn't not matched with confirm password",
+        400,
+      ),
+    );
+  }
+
+  user.password = req.body.newPassword;
+  await user.save();
+
+  res
+    .status(200)
+    .json({ success: true, message: "Password changed successfully" });
+});
+
+export const findUserInfo = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.params.id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return next(new ErrorHandler("User not found", 400));
+  }
+
+  res.status(200).json({ success: true, user });
+});
