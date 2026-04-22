@@ -48,3 +48,12 @@ export const deleteCouponCode = catchAsyncErrors(async (req, res, next) => {
     message: "Coupon Code deleted successfully",
   });
 });
+
+export const getCouponValue = catchAsyncErrors(async (req, res, next) => {
+  const couponCode = await CouponCode.findOne({ name: req.params.name });
+
+  res.status(201).json({
+    success: true,
+    couponCode,
+  });
+});
