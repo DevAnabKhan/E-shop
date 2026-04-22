@@ -3,6 +3,7 @@ import Product from "../model/productModel.js";
 import Shop from "../model/shopModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import fs from "fs";
+import Order from "../model/orderModel.js";
 
 export const getAllProducts = catchAsyncErrors(async (req, res, next) => {
   const products = await Product.find({ shopId: req.params.id });
@@ -85,3 +86,59 @@ export const getAllProductsForUser = catchAsyncErrors(
     });
   },
 );
+export const createNewReview = catchAsyncErrors(async (req, res, next) => {
+  const { user, rating, comment, productId, orderId } = req.body;
+
+  const product = await Product.findById(productId);
+
+  const review = {
+    user,
+    rating: Number(rating),
+    comment,
+    productId,
+  };
+
+  const isReviewed = product.reviews.find(
+    (rev) => rev.user._id === req.user._id,
+  );
+
+  if (isReviewed) {
+    product.reviews.forEach((rev) => {
+      if (rev.user._id === req.user._id) {
+        rev.rating = rating;
+        rev.comment = comment;
+        rev.user = user;
+      }
+    });
+  } else {
+    product.reviews.push(review);
+  }
+
+  let avg = 0;
+
+  product.reviews.forEach((rev) => {
+    avg += rev.rating;
+  });
+
+  product.ratings = avg / product.reviews.length;
+
+  await product.save({ validateBeforeSave: false });
+
+  await Order.findByIdAndUpdate(
+    orderId,
+    {
+      $set: {
+        "cart.$[element].isReviewed": true,
+      },
+    },
+    {
+      arrayFilters: [{ "element._id": productId }],
+      new: true,
+    },
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Reviewed successfully",
+  });
+});
