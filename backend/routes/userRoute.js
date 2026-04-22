@@ -10,6 +10,8 @@ import {
   updateAvatar,
   updateUserAddress,
   deleteUserAddress,
+  updateUserPassword,
+  findUserInfo,
 } from "../controller/userController.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -28,6 +30,8 @@ userRouter.put(
   updateAvatar,
 );
 userRouter.put("/update-user-addresses", isAuthenticated, updateUserAddress);
+userRouter.put("/update-user-password", isAuthenticated, updateUserPassword);
+userRouter.get("/user-info/:id", findUserInfo);
 userRouter.delete(
   "/delete-user-address/:id",
   isAuthenticated,
