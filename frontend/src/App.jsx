@@ -21,11 +21,30 @@ import {
   ShopAllEventsPage,
   ShopAllCouponsPage,
   ShopPreviewPage,
+  CheckoutPage,
+  PaymentPage,
+  OrderSuccessPage,
+  ShopAllOrders,
+  ShopOrderDetails,
+  OrderDetailPage,
+  TrackOrderPage,
+  ShopOrderRefund,
+  ShopSettingPage,
+  ShopWithdrawMoneyPage,
+  ShopInboxPage,
+  UserInbox,
+  AdminDashboardPage,
+  AdminDashboardUsersPage,
+  AdminDashboardShop,
+  AdminDashboardOrders,
+  AdminDashboardProducts,
+  AdminDashboardEvents,
+  AdminDashboardWithdraw,
 } from "./Routes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import store from "./redux/store";
 import { loadUser } from "./redux/actions/user";
 import ProtectedRoute from "./protectedRoutes/ProtectedRoute";
@@ -33,16 +52,26 @@ import { loadShop } from "./redux/actions/shop";
 import ShopProtectedRoute from "./protectedRoutes/ShopProtectedRoute";
 import { getAllProductsForUser } from "./redux/actions/product";
 import { getAllEventsForUser } from "./redux/actions/event";
+import { server } from "./server";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import AdminProtectedRoute from "./protectedRoutes/AdminProtectedRoute";
 
 axios.defaults.withCredentials = true;
 const App = () => {
+  const [stripeApiKey, setStripeApiKey] = useState("");
+  async function gettStripeApiKey() {
+    const { data } = await axios.get(`${server}/payment/stripeapikey`);
+    setStripeApiKey(data.stripeApikey);
+  }
   useEffect(() => {
     store.dispatch(loadUser());
     store.dispatch(loadShop());
     store.dispatch(getAllProductsForUser());
     store.dispatch(getAllEventsForUser());
+    gettStripeApiKey();
   }, []);
-
+  const stripePromise = stripeApiKey ? loadStripe(stripeApiKey) : null;
   return (
     <div>
       <Routes>
@@ -72,7 +101,21 @@ const App = () => {
           path="/checkout"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/order/success" element={<OrderSuccessPage />} />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              {stripePromise && (
+                <Elements stripe={stripePromise}>
+                  <PaymentPage />
+                </Elements>
+              )}
             </ProtectedRoute>
           }
         />
@@ -98,6 +141,46 @@ const App = () => {
           }
         />
         <Route
+          path="/dashboard-orders"
+          element={
+            <ShopProtectedRoute>
+              <ShopAllOrders />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/order/:id"
+          element={
+            <ShopProtectedRoute>
+              <ShopOrderDetails />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/order/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/track/order/:id"
+          element={
+            <ProtectedRoute>
+              <TrackOrderPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/inbox"
+          element={
+            <ProtectedRoute>
+              <UserInbox />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/dashboard-create-product"
           element={
             <ShopProtectedRoute>
@@ -110,6 +193,38 @@ const App = () => {
           element={
             <ShopProtectedRoute>
               <ShopAllProducts />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ShopProtectedRoute>
+              <ShopSettingPage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-refunds"
+          element={
+            <ShopProtectedRoute>
+              <ShopOrderRefund />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-withdraw-money"
+          element={
+            <ShopProtectedRoute>
+              <ShopWithdrawMoneyPage />
+            </ShopProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-messages"
+          element={
+            <ShopProtectedRoute>
+              <ShopInboxPage />
             </ShopProtectedRoute>
           }
         />
@@ -149,30 +264,63 @@ const App = () => {
           path="/seller/activation/:activation_token"
           element={<SellerActivationPage />}
         />
-        {/* <Route path="/" element={<Home />} />
-        <Route path="/movies" element={<Movies />} />
-        <Route path="/movies/:id" element={<MovieDetails />} />
-        <Route path="/movies/:id/:date" element={<SeatLayout />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
-        <Route path="/loading/:nextUrl" element={<Loading />} />
-        <Route path="/favorite" element={<Favorite />} />
+
         <Route
-          path="/admin/*"
+          path="/admin/dashboard"
           element={
-            user ? (
-              <Layout />
-            ) : (
-              <div className="min-h-screen flex justify-center items-center">
-                <SignIn fallbackRedirectUrl={"/admin"} />
-              </div>
-            )
+            <AdminProtectedRoute>
+              <AdminDashboardPage />
+            </AdminProtectedRoute>
           }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="add-shows" element={<AddShows />} />
-          <Route path="list-shows" element={<ListShows />} />
-          <Route path="list-bookings" element={<ListBookings />} />
-        </Route> */}
+        />
+        <Route
+          path="/admin-users"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardUsersPage />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-shops"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardShop />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-orders"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardOrders />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-products"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardProducts />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-events"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardEvents />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-withdraw-request"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboardWithdraw />
+            </AdminProtectedRoute>
+          }
+        />
       </Routes>
       <ToastContainer
         position="bottom-center"
