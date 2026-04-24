@@ -82,3 +82,12 @@ export const getAllEventsForUser = catchAsyncErrors(async (req, res, next) => {
     events,
   });
 });
+
+export const getAllAdminEvent = catchAsyncErrors(async (req, res, next) => {
+  const events = await Event.find().sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    events,
+  });
+});
