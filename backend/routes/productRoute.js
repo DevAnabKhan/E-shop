@@ -6,8 +6,13 @@ import {
   getAllProducts,
   getAllProductsForUser,
   createNewReview,
+  getAllAdminProduct,
 } from "../controller/productController.js";
-import { isAuthenticated, isShopAuthenticated } from "../middleware/auth.js";
+import {
+  isAdminAuthenticated,
+  isAuthenticated,
+  isShopAuthenticated,
+} from "../middleware/auth.js";
 
 const productRoute = express.Router();
 
@@ -19,6 +24,12 @@ productRoute.delete(
   "/delete-shop-product/:id",
   isShopAuthenticated,
   deleteShopProduct,
+);
+productRoute.get(
+  "/get-all-admin-products",
+  isAuthenticated,
+  isAdminAuthenticated("Admin"),
+  getAllAdminProduct,
 );
 
 export default productRoute;
