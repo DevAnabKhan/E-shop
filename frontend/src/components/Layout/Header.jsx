@@ -23,6 +23,7 @@ const Header = ({ activeHeading }) => {
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { isAuthenticated, user, loading } = useSelector((state) => state.user);
+  const { isShopAuthenticated } = useSelector((state) => state.shop);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);
@@ -106,9 +107,11 @@ const Header = ({ activeHeading }) => {
               </div>
 
               <div className={`${styles.button}`}>
-                <Link to={"/shop-create"}>
+                <Link
+                  to={`${isShopAuthenticated ? "/dashboard" : "/shop-create"}`}
+                >
                   <h1 className="text-[#fff] flex items-center">
-                    Become Seller
+                    {isShopAuthenticated ? "Dashboard" : "Become Seller"}
                     <IoIosArrowForward className="ml-1" />
                   </h1>
                 </Link>
