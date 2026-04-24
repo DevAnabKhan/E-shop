@@ -328,3 +328,27 @@ export const findUserInfo = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({ success: true, user });
 });
+
+export const getAllAdminUsers = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find().sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+export const deleteUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 400));
+  }
+
+  await User.findByIdAndDelete(req.params.id);
+
+  res.status(200).json({
+    success: true,
+    message: "User deleted successfully",
+  });
+});
