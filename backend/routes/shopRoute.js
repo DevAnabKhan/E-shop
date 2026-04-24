@@ -9,8 +9,15 @@ import {
   getShopInfo,
   updateShopAvatar,
   updateShopInfo,
+  getAllAdminShop,
+  deleteShop,
+  updatePaymentMethod,
 } from "../controller/shopController.js";
-import { isShopAuthenticated } from "../middleware/auth.js";
+import {
+  isAdminAuthenticated,
+  isAuthenticated,
+  isShopAuthenticated,
+} from "../middleware/auth.js";
 
 const shopRouter = express.Router();
 
@@ -18,6 +25,12 @@ shopRouter.post("/create-shop", upload.single("file"), registerSeller);
 shopRouter.post("/shop-activation", activateShopAccount);
 shopRouter.post("/login-shop", loginShop);
 shopRouter.get("/get-shop", isShopAuthenticated, getShop);
+shopRouter.get(
+  "/get-all-admin-shops",
+  isAuthenticated,
+  isAdminAuthenticated("Admin"),
+  getAllAdminShop,
+);
 shopRouter.get("/logout-shop", logoutShop);
 shopRouter.get("/get-shop-info/:id", isShopAuthenticated, getShopInfo);
 shopRouter.put(
@@ -27,4 +40,15 @@ shopRouter.put(
   updateShopAvatar,
 );
 shopRouter.put("/update-shop-info", isShopAuthenticated, updateShopInfo);
+shopRouter.put(
+  "/update-payment-method",
+  isShopAuthenticated,
+  updatePaymentMethod,
+);
+shopRouter.delete(
+  "/delete-shop/:id",
+  isAuthenticated,
+  isAdminAuthenticated("Admin"),
+  deleteShop,
+);
 export default shopRouter;
