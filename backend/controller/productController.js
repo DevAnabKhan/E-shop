@@ -142,3 +142,12 @@ export const createNewReview = catchAsyncErrors(async (req, res, next) => {
     message: "Reviewed successfully",
   });
 });
+
+export const getAllAdminProduct = catchAsyncErrors(async (req, res, next) => {
+  const products = await Product.find().sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    products,
+  });
+});
