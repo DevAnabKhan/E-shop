@@ -215,3 +215,42 @@ export const updateShopInfo = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({ success: true, shop });
 });
+
+export const getAllAdminShop = catchAsyncErrors(async (req, res, next) => {
+  const shops = await Shop.find().sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    shops,
+  });
+});
+
+export const deleteShop = catchAsyncErrors(async (req, res, next) => {
+  const shop = await Shop.findById(req.params.id);
+
+  if (!shop) {
+    return next(new ErrorHandler("Shop not found", 400));
+  }
+
+  await Shop.findByIdAndDelete(req.params.id);
+
+  res.status(200).json({
+    success: true,
+    message: "Shop deleted successfully",
+  });
+});
+
+export const updatePaymentMethod = catchAsyncErrors(async (req, res, next) => {
+  const { withdrawMethod } = req.body;
+
+  const shop = await Shop.findByIdAndUpdate(
+    req.shop._id,
+    { withdrawMethod },
+    { new: true },
+  );
+
+  res.status(200).json({
+    success: true,
+    shop,
+  });
+});
