@@ -1,9 +1,14 @@
 import express from "express";
 import upload from "../multer.js";
-import { isShopAuthenticated } from "../middleware/auth.js";
+import {
+  isAdminAuthenticated,
+  isAuthenticated,
+  isShopAuthenticated,
+} from "../middleware/auth.js";
 import {
   createEvent,
   deleteShopEvent,
+  getAllAdminEvent,
   getAllEvents,
   getAllEventsForUser,
 } from "../controller/eventController.js";
@@ -18,5 +23,10 @@ eventRoute.delete(
   isShopAuthenticated,
   deleteShopEvent,
 );
-
+eventRoute.get(
+  "/get-all-admin-events",
+  isAuthenticated,
+  isAdminAuthenticated("Admin"),
+  getAllAdminEvent,
+);
 export default eventRoute;
