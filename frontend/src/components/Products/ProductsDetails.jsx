@@ -8,7 +8,7 @@ import {
   AiOutlineMessage,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { backend_url } from "../../server";
+import { backend_url, server } from "../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../../redux/actions/product";
 import { toast } from "react-toastify";
@@ -17,11 +17,14 @@ import {
   removefromWishlist,
 } from "../../redux/actions/wishlist";
 import { addtoCart } from "../../redux/actions/cart";
+import Ratings from "./Ratings";
+import axios from "axios";
 
 const ProductsDetails = ({ data }) => {
   const { allUserProducts } = useSelector((state) => state.product);
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   console.log("data in product detail", data);
 
@@ -54,6 +57,25 @@ const ProductsDetails = ({ data }) => {
       }
     }
   };
+
+  const products = allUserProducts || [];
+  const totalReviewsLength =
+    products?.reduce(
+      (acc, product) => acc + (product.reviews?.length || 0),
+      0,
+    ) || 0;
+
+  const totalRatings =
+    products?.reduce(
+      (acc, product) =>
+        acc +
+        (product.reviews?.reduce((sum, review) => sum + review.rating, 0) || 0),
+      0,
+    ) || 0;
+
+  const averageRating =
+    totalReviewsLength > 0 ? totalRatings / totalReviewsLength : 0;
+
   const removeFromWishlistHandler = (data) => {
     setClick(!click);
     dispatch(removefromWishlist(data._id));
@@ -71,8 +93,27 @@ const ProductsDetails = ({ data }) => {
   };
   const navigate = useNavigate();
 
-  const handleMessageSubmit = () => {
-    navigate(`/inbox?coversation=507ebc95f1a2b3c4d5e`);
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const shopId = data.shop._id;
+
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          shopId,
+        })
+        .then((res) => {
+          navigate(`/conversation/${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message || "Something went wrong");
+        });
+    } else {
+      toast.error("Please login to send message");
+    }
   };
   return (
     <div className="bg-white">
@@ -210,7 +251,9 @@ const ProductsDetails = ({ data }) => {
                       </h3>
                     </Link>
 
-                    <h5 className="pb-3 text-[15px]">({4}) Ratings</h5>
+                    <h5 className="pb-3 text-[15px]">
+                      ({averageRating} / 5) Ratings
+                    </h5>
                   </div>
                   <div
                     className={` !bg-[#6443d1] ${styles.button}  mt-4 rounded! !h-11 `}
@@ -224,7 +267,13 @@ const ProductsDetails = ({ data }) => {
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} products={allUserProducts} />
+          <ProductDetailsInfo
+            data={data}
+            products={allUserProducts}
+            averageRating={averageRating}
+            totalRatings={totalRatings}
+            totalReviewsLength={totalReviewsLength}
+          />
           <br />
           <br />
         </div>
@@ -233,7 +282,13 @@ const ProductsDetails = ({ data }) => {
   );
 };
 
-const ProductDetailsInfo = ({ data, products }) => {
+const ProductDetailsInfo = ({
+  data,
+  products,
+  averageRating,
+  totalRatings,
+  totalReviewsLength,
+}) => {
   const [active, setActive] = useState(1);
 
   return (
@@ -278,8 +333,29 @@ const ProductDetailsInfo = ({ data, products }) => {
         </>
       )}
       {active === 2 && (
-        <div className="w-full justify-center min-h-[40vh] flex items-center">
-          <p>No Reviews yet!</p>
+        <div className="w-full py-3 min-h-[40vh] flex flex-col items-center overflow-y-scroll">
+          {data?.reviews?.map((item, index) => (
+            <div key={item._id || index} className="w-full flex my-2">
+              <img
+                src={`${backend_url}${item.user?.avatar?.url || item.user?.avatar}`}
+                alt=""
+                className="w-12.5 h-12.5 rounded-full mr-2"
+              />
+              <div className="pl-2">
+                <div className="flex w-full items-center">
+                  <h1 className="font-[500] mr-3">{item.user.name}</h1>
+                  <Ratings rating={data.ratings} />
+                </div>
+                <p>{item.comment}</p>
+              </div>
+            </div>
+          ))}
+
+          <div className="w-full flex justify-center">
+            {data?.reviews?.length === 0 && (
+              <h5>No Reviews for this Product!</h5>
+            )}
+          </div>
         </div>
       )}
       {active === 3 && (
@@ -294,7 +370,9 @@ const ProductDetailsInfo = ({ data, products }) => {
                 />
                 <div className="pl-3">
                   <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
-                  <h5 className="pb-3 text-[15px]">({4}) Ratings</h5>
+                  <h5 className="pb-3 text-[15px]">
+                    ({averageRating} / 5) Ratings
+                  </h5>
                 </div>
               </div>
             </Link>
@@ -313,7 +391,8 @@ const ProductDetailsInfo = ({ data, products }) => {
                 <span className="font-medium">{products.length}</span>
               </h5>
               <h5 className="font-semibold pt-3">
-                Total Reviews: <span className="font-medium">1200</span>
+                Total Reviews:{" "}
+                <span className="font-medium">{totalReviewsLength}</span>
               </h5>
 
               <Link to="/">
