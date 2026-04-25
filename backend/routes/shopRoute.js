@@ -12,6 +12,7 @@ import {
   getAllAdminShop,
   deleteShop,
   updatePaymentMethod,
+  deleteWithdrawMethod,
 } from "../controller/shopController.js";
 import {
   isAdminAuthenticated,
@@ -50,5 +51,10 @@ shopRouter.delete(
   isAuthenticated,
   isAdminAuthenticated("Admin"),
   deleteShop,
+);
+shopRouter.delete(
+  "/delete-withdraw-method/:id",
+  isAuthenticated,
+  deleteWithdrawMethod,
 );
 export default shopRouter;
