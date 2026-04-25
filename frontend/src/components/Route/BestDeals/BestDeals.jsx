@@ -10,9 +10,10 @@ const BestDeals = () => {
   const dispatch = useDispatch();
   console.log(allUserProducts);
   useEffect(() => {
-    const d = allUserProducts && allUserProducts;
+    const allProductsData = [...allUserProducts];
+    const sortedData = allProductsData.sort((a, b) => b.sold_out - a.sold_out);
+    const d = sortedData && sortedData;
     const firstFive = d.slice(0, 5);
-    console.log(data);
     setData(firstFive);
   }, []);
 
