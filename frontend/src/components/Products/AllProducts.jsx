@@ -38,6 +38,13 @@ const AllProducts = () => {
       flex: 0.6,
     },
     {
+      field: "name",
+      headerName: "Name",
+
+      minWidth: 100,
+      flex: 0.6,
+    },
+    {
       field: "stock",
       headerName: "Stock",
       type: "number",
@@ -100,7 +107,7 @@ const AllProducts = () => {
         name: item.name,
         price: "US$ " + item.discountPrice,
         stock: item.stock,
-        sold: 10,
+        sold: item.sold_out,
       });
     });
 
