@@ -71,11 +71,11 @@ const DashboardSidebar = ({ active, setActive }) => {
       id: 11,
       title: "Settings",
       icon: CiSettings,
-      route: "/dashboard-settings",
+      route: "/settings",
     },
   ];
   return (
-    <div className="w-full h-[89vh] bg-white overflow-y-scroll shadow-sm sticky top-0 left-0 z-10 ">
+    <div className="w-full h-[89vh] bg-white overflow-y-scroll shadow-sm sticky top-0 left-0 z-10 py-6">
       {menuItems.map((item) => {
         const Icon = item.icon;
         return (
