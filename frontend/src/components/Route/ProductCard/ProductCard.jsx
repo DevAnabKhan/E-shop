@@ -19,8 +19,9 @@ import {
 } from "../../../redux/actions/wishlist";
 import { addtoCart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
+import Ratings from "../../Products/Ratings";
 
-const ProductCard = ({ data }) => {
+const ProductCard = ({ data, isEvent }) => {
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
@@ -62,7 +63,9 @@ const ProductCard = ({ data }) => {
     <>
       <div className="w-full h-92.5 bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
         <div className="flex justify-center"></div>
-        <Link to={`/product/${data._id}`}>
+        <Link
+          to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}
+        >
           <img
             src={`${backend_url}/uploads/${data.images[0]?.url}`}
             alt=""
@@ -72,52 +75,34 @@ const ProductCard = ({ data }) => {
         <Link to={`/shop/preview/${data?.shop._id}`}>
           <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
         </Link>
-        <Link to={`/product/${data._id}`}>
+        <Link
+          to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}
+        >
           <h4 className="pb-3 font-medium">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>
           <div className="flex">
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer "
-              color="#F4BA00"
-            />
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F4BA00"
-            />
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F4BA00"
-            />
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F4BA00"
-            />
-            <AiOutlineStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F4BA00"
-            />
+            <Ratings rating={data.ratings} />
           </div>
-          <div className="py-2 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h5 className={`${styles.productDiscountPrice}`}>
-                ${data.discountPrice}
-              </h5>
+          <div>
+            <div className="py-2 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h5 className={`${styles.productDiscountPrice}`}>
+                  ${data.discountPrice}
+                </h5>
 
-              {data.originalPrice && (
-                <h4 className={`${styles.price} line-through text-red-500`}>
-                  ${data.originalPrice}
-                </h4>
-              )}
+                {data.originalPrice && (
+                  <h4 className={`${styles.price} line-through text-red-500`}>
+                    ${data.originalPrice}
+                  </h4>
+                )}
+              </div>
             </div>
-            <span className=" text-[17px] font-[400] text-[#68d284]">
-              {data.total_sell || 0} sold
-            </span>
+            <div className=" flex justify-end items-end">
+              <span className="justify-end text-[17px] font-[400] text-[#68d284]">
+                ({data.sold_out || 0} sold out)
+              </span>
+            </div>
           </div>
         </Link>
         <div>
