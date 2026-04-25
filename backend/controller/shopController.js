@@ -254,3 +254,19 @@ export const updatePaymentMethod = catchAsyncErrors(async (req, res, next) => {
     shop,
   });
 });
+export const deleteWithdrawMethod = catchAsyncErrors(async (req, res, next) => {
+  const shop = await Shop.findById(req.params.id);
+
+  if (!shop) {
+    return next(new ErrorHandler("Shop not found", 400));
+  }
+
+  shop.withdrawMethod = null;
+
+  await Shop.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Shop deleted successfully",
+  });
+});
