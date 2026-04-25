@@ -10,6 +10,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { MdTrackChanges } from "react-icons/md";
 import {
   deleteUserAddress,
+  loadUser,
   updateUserAddress,
   updateUserInfo,
 } from "../../redux/actions/user";
@@ -18,6 +19,7 @@ import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { Country, State } from "country-state-city";
 import { clearError, clearMessage } from "../../redux/slices/userSlice";
+import { getAllOrdersOfUser } from "../../redux/actions/order";
 
 const ProfileContent = ({ active, setActive }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -60,7 +62,8 @@ const ProfileContent = ({ active, setActive }) => {
       });
       console.log("response", res);
       if (res.data.success === true) {
-        window.location.reload();
+        dispatch(loadUser());
+        toast.success("Updated successfully");
       }
     } catch (error) {
       const msg =
@@ -197,22 +200,16 @@ const ProfileContent = ({ active, setActive }) => {
 };
 
 const AllOrders = () => {
-  const orders = [
-    {
-      _id: 1,
-      orderItems: [
-        {
-          productId: "123",
-          quantity: 2,
-          price: 50.0,
-          name: "Product 1",
-        },
-      ],
-      totalPrice: 100.0,
-      orderStatus: "Delivered",
-    },
-  ];
+  const { orders } = useSelector((state) => state.order);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(getAllOrdersOfUser(user._id));
+    }
+  }, [user]);
 
+  console.log(orders);
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
@@ -268,9 +265,9 @@ const AllOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus, // ← correct
+        status: item.status, // ← correct
       });
     });
 
@@ -288,21 +285,19 @@ const AllOrders = () => {
 };
 
 const AllRefundOrders = () => {
-  const orders = [
-    {
-      _id: 1,
-      orderItems: [
-        {
-          productId: "123",
-          quantity: 2,
-          price: 50.0,
-          name: "Product 1",
-        },
-      ],
-      totalPrice: 100.0,
-      orderStatus: "Delivered",
-    },
-  ];
+  const { orders } = useSelector((state) => state.order);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(getAllOrdersOfUser(user._id));
+    }
+  }, [user]);
+
+  console.log(orders);
+
+  const eligibleOrder =
+    orders && orders.filter((item) => item.status === "Processing refund");
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
@@ -354,13 +349,13 @@ const AllRefundOrders = () => {
 
   const row = [];
 
-  orders &&
-    orders.forEach((item) => {
+  eligibleOrder &&
+    eligibleOrder.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus,
+        status: item.status, // ← correct
       });
     });
 
@@ -378,21 +373,16 @@ const AllRefundOrders = () => {
 };
 
 const TrackOrders = () => {
-  const orders = [
-    {
-      _id: 1,
-      orderItems: [
-        {
-          productId: "123",
-          quantity: 2,
-          price: 50.0,
-          name: "Product 1",
-        },
-      ],
-      totalPrice: 100.0,
-      orderStatus: "Delivered",
-    },
-  ];
+  const { orders } = useSelector((state) => state.order);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(getAllOrdersOfUser(user._id));
+    }
+  }, [user]);
+
+  console.log(orders);
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
@@ -448,9 +438,9 @@ const TrackOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item.cart.length,
         total: "US$ " + item.totalPrice,
-        status: item.orderStatus,
+        status: item.status, // ← correct
       });
     });
   return (
@@ -467,11 +457,91 @@ const TrackOrders = () => {
 };
 
 const ChangePassword = () => {
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const passwordChangeHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.put(`${server}/user/update-user-password`, {
+        oldPassword,
+        newPassword,
+        confirmPassword,
+      });
+      if (res.data.success) {
+        toast.success(res.data.message);
+        setNewPassword("");
+        setConfirmPassword("");
+        setOldPassword("");
+      }
+    } catch (error) {
+      console.log("Error caught:", error);
+
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong";
+
+      toast.error(msg);
+    }
+  };
   return (
     <div className="px-5 w-full">
       <h1 className="text-[25px] text-center font-semibold text-[#000000ba] pb-2">
         Change Password
       </h1>
+      <div className="w-full">
+        <form
+          action=""
+          aria-required
+          onSubmit={passwordChangeHandler}
+          className="flex flex-col items-center"
+        >
+          <div className="w-full 800:w-[50%] mt-5">
+            <label htmlFor="" className="block pb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              className={`${styles.input} w-[95%]! mb-4 800:mb-0`}
+              required
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+          </div>
+          <div className="w-full 800:w-[50%] mt-5">
+            <label htmlFor="" className="block pb-2">
+              New Password
+            </label>
+            <input
+              type="password"
+              className={`${styles.input} w-[95%]! mb-4 800:mb-0`}
+              required
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+          </div>
+          <div className="w-full 800:w-[50%] mt-5">
+            <label htmlFor="" className="block pb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              className={`${styles.input} w-[95%]! mb-4 800:mb-0`}
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <input
+            className={`800:w-[50%] w-[30%]! h-10 border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
+            required
+            value="Update"
+            type="submit"
+          />
+        </form>
+      </div>
     </div>
   );
 };
