@@ -28,22 +28,7 @@ const DashboardHero = () => {
     dispatch(getAllProduct(shop._id));
   }, [dispatch, shop._id]);
 
-  // ✅ Separate useEffect that runs when shopOrders actually loads
-  useEffect(() => {
-    if (shopOrders) {
-      const orderData = shopOrders.filter(
-        (item) => item.status === "Delivered",
-      );
-      setDeliveredOrder(orderData);
-    }
-  }, [shopOrders]);
-  const totalEarningwithoutTax =
-    deliveredOrder && deliveredOrder.length > 0
-      ? deliveredOrder.reduce((acc, item) => acc + item.totalPrice, 0)
-      : 0;
-
-  const serviceCharge = totalEarningwithoutTax * 0.1;
-  const availableBalance = (totalEarningwithoutTax - serviceCharge).toFixed(2);
+  const availableBalance = shop.availableBalance.toFixed(2);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
