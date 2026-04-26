@@ -1,6 +1,8 @@
 import { catchAsyncErrors } from "../middleware/catchAsyncErrors.js";
 import Order from "../model/orderModel.js";
+import Shop from "../model/shopModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
+import { updateShopInfo } from "./shopController.js";
 
 export const createOrder = catchAsyncErrors(async (req, res, next) => {
   const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
@@ -75,6 +77,8 @@ export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
   if (req.body.status === "Delivered") {
     order.deliveredAt = Date.now();
     order.paymentInfo.status = "Succeeded";
+    const serviceCharge = order.totalPrice * 0.1;
+    await updateShopInfo(order.totalPrice - serviceCharge);
   }
 
   await order.save({ validateBeforeSave: false });
@@ -84,6 +88,13 @@ export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
     product.sold_out += qty;
     await product.save({ validateBeforeSave: false });
   }
+
+  async function updateShopInfo(amount) {
+    const shop = await Shop.findById(req.shop.id);
+    shop.availableBalance = amount;
+    await shop.save();
+  }
+
   res.status(200).json({
     success: true,
     order,
