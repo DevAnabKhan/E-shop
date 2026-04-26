@@ -5,6 +5,9 @@ import { Link, useParams } from "react-router-dom";
 import styles from "../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../../redux/actions/product";
+import { backend_url } from "../../server";
+import { getAllEvents } from "../../redux/actions/event";
+import Ratings from "../Products/Ratings";
 
 const ShopProfileData = ({ isOwner }) => {
   const { allProducts } = useSelector((state) => state.product);
@@ -12,12 +15,15 @@ const ShopProfileData = ({ isOwner }) => {
   const { id } = useParams();
   const [active, setActive] = useState(1);
   const dispatch = useDispatch();
-  console.log(allProducts);
   useEffect(() => {
     if (id) {
       dispatch(getAllProduct(id));
+      dispatch(getAllEvents(id));
     }
   }, [dispatch, id]);
+
+  const allReviews =
+    allProducts && allProducts.map((product) => product.reviews).flat();
 
   return (
     <div className="w-full">
@@ -105,13 +111,13 @@ const ShopProfileData = ({ isOwner }) => {
         </div>
       )}
 
-      {/* {active === 3 && (
+      {active === 3 && (
         <div className="w-full">
           {allReviews &&
             allReviews.map((item, index) => (
               <div className="w-full flex my-4">
                 <img
-                  src={`${item.user.avatar?.url}`}
+                  src={`${backend_url}${item.user.avatar?.url}`}
                   className="w-[50px] h-[50px] rounded-full"
                   alt=""
                 />
@@ -121,7 +127,9 @@ const ShopProfileData = ({ isOwner }) => {
                     <Ratings rating={item.rating} />
                   </div>
                   <p className="font-[400] text-[#000000a7]">{item?.comment}</p>
-                  <p className="text-[#000000a7] text-[14px]">{"2days ago"}</p>
+                  <p className="text-[#000000a7] text-[14px]">
+                    {item?.createdAt || "2days ago"}
+                  </p>
                 </div>
               </div>
             ))}
@@ -131,7 +139,7 @@ const ShopProfileData = ({ isOwner }) => {
             </h5>
           )}
         </div>
-      )} */}
+      )}
     </div>
   );
 };
