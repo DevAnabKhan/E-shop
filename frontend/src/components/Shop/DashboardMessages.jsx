@@ -25,6 +25,7 @@ const DashboardMessages = () => {
   const [userData, setUserdata] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [activeStatus, setActiveStatus] = useState(false);
+  const [images, setImages] = useState({});
 
   useEffect(() => {
     socketId.on("getMessage", (data) => {
@@ -155,6 +156,58 @@ const DashboardMessages = () => {
       });
   };
 
+  const handleImageUpload = async (e) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setImages(reader.result);
+        imageSendingHandler(reader.result);
+      }
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
+  const imageSendingHandler = async (e) => {
+    const receiverId = currentChat.members.find(
+      (member) => member !== shop._id,
+    );
+
+    socketId.emit("sendMessage", {
+      senderId: shop._id,
+      receiverId,
+      images: e,
+    });
+
+    try {
+      await axios
+        .post(`${server}/message/create-new-message`, {
+          images: e,
+          sender: shop._id,
+          text: newMessage,
+          conversationId: currentChat._id,
+        })
+        .then((res) => {
+          setImages();
+          setMessages([...messages, res.data.message]);
+          updateLastMessageForImage();
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateLastMessageForImage = async () => {
+    await axios.put(
+      `${server}/conversation/update-last-message/${currentChat._id}`,
+      {
+        lastMessage: "Photo",
+        lastMessageId: shop._id,
+      },
+    );
+  };
+
   return (
     <div className="w-[90%] bg-white m-5 h-[85vh] overflow-y-scroll rounded ">
       {!open && (
@@ -189,6 +242,7 @@ const DashboardMessages = () => {
           shopId={shop._id}
           userData={userData}
           activeStatus={activeStatus}
+          handleImageUpload={handleImageUpload}
         />
       )}
     </div>
@@ -274,6 +328,7 @@ const ShopInbox = ({
   shopId,
   userData,
   activeStatus,
+  handleImageUpload,
 }) => {
   const [active, setActive] = useState(0);
   const navigate = useNavigate();
@@ -346,7 +401,15 @@ const ShopInbox = ({
         onSubmit={sendMessageHandler}
       >
         <div className="w-[2%] items-center justify-center pr-6 ">
-          <TfiGallery size={20} className="cursor-pointer " />
+          <input
+            type="file"
+            id="image"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
+          <label htmlFor="image">
+            <TfiGallery size={20} className="cursor-pointer " />
+          </label>
         </div>
         <div className="w-[97%]">
           <input
