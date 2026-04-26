@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { backend_url, server } from "../../server";
 import styles from "../../styles/styles";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loader from "../Layout/Loader";
+import { getAllProduct } from "../../redux/actions/product";
 
 const ShopInfo = ({ isOwner }) => {
   const { allProducts } = useSelector((state) => state.product);
@@ -14,8 +15,9 @@ const ShopInfo = ({ isOwner }) => {
   const [active, setActive] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({});
-  console.log(allProducts);
+  const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(getAllProduct(id));
     const fetchData = async () => {
       if (id) {
         try {
@@ -47,10 +49,29 @@ const ShopInfo = ({ isOwner }) => {
         navigate("/shop-login");
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message || "Logout failed!");
     }
   };
+
+  const products = allProducts || [];
+  const totalReviewsLength =
+    products?.reduce(
+      (acc, product) => acc + (product.reviews?.length || 0),
+      0,
+    ) || 0;
+
+  const totalRatings =
+    products?.reduce(
+      (acc, product) =>
+        acc +
+        (product.reviews?.reduce((sum, review) => sum + review.rating, 0) || 0),
+      0,
+    ) || 0;
+
+  const averageRating =
+    totalReviewsLength > 0 ? totalRatings / totalReviewsLength : 0;
+
+  console.log("Shop info ", data);
   return (
     <>
       {isLoading ? (
@@ -86,7 +107,7 @@ const ShopInfo = ({ isOwner }) => {
           </div>
           <div className="p-3">
             <h5 className="font-semibold">Shop Ratings</h5>
-            <h4 className="text-[#000000b0]">4/5</h4>
+            <h4 className="text-[#000000b0]">{averageRating}/ 5</h4>
           </div>
           <div className="p-3">
             <h5 className="font-semibold">Joined On</h5>
