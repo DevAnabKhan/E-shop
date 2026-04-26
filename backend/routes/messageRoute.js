@@ -9,7 +9,7 @@ const messageRoute = express.Router();
 
 messageRoute.post(
   "/create-new-message",
-  upload.array("images"),
+  upload.single("images"),
   createNewMessage,
 );
 messageRoute.get("/get-all-messages/:id", getAllMessages);
