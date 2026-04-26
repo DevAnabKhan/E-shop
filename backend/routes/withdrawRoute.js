@@ -5,14 +5,30 @@ import {
   isAuthenticated,
   isShopAuthenticated,
 } from "../middleware/auth.js";
-import { createWithdrawRequest } from "../controller/withdrawController.js";
+import {
+  createWithdrawRequest,
+  getAllWithdrawRequest,
+  updateWithdrawRequest,
+} from "../controller/withdrawController.js";
 
 const withdrawRoute = express.Router();
 
-withdrawRoute.delete(
+withdrawRoute.post(
   "/create-withdraw-request",
   isShopAuthenticated,
   createWithdrawRequest,
+);
+withdrawRoute.get(
+  "/get-all-withdraw-request",
+  isAuthenticated,
+  isAdminAuthenticated("Admin"),
+  getAllWithdrawRequest,
+);
+withdrawRoute.put(
+  "/update-withdraw-request/:id",
+  isAuthenticated,
+  isAdminAuthenticated("Admin"),
+  updateWithdrawRequest,
 );
 
 export default withdrawRoute;
