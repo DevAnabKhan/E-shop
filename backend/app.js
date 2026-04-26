@@ -12,6 +12,7 @@ import paymentRoute from "./routes/paymentRoute.js";
 import orderRoute from "./routes/orderRoute.js";
 import conversationRoute from "./routes/conversationRoute.js";
 import messageRoute from "./routes/messageRoute.js";
+import withdrawRoute from "./routes/withdrawRoute.js";
 
 const app = express();
 app.use(express.json());
@@ -45,6 +46,7 @@ app.use("/api/v2/payment", paymentRoute);
 app.use("/api/v2/order", orderRoute);
 app.use("/api/v2/conversation", conversationRoute);
 app.use("/api/v2/message", messageRoute);
+app.use("/api/v2/withdraw", withdrawRoute);
 
 app.use(error);
 export default app;
