@@ -70,7 +70,7 @@ export const getAllEventsForUser = () => async (dispatch) => {
     dispatch(getAllEventsForUserRequest());
 
     const { data } = await axios.get(`${server}/event/get-all-events`);
-    console.log(data);
+    console.log("All eventts", data);
     dispatch(getAllEventsForUserSuccess(data.events));
   } catch (error) {
     dispatch(
