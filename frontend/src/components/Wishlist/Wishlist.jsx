@@ -41,7 +41,7 @@ const Wishlist = ({ setOpenWishlist }) => {
             
             "
           >
-            <div className="flex w-full justify-end ptt-5 pr-5 fixed top-3 right-3">
+            <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
               <RxCross1
                 size={25}
                 className="cursor-pointer"
@@ -94,7 +94,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
     <div className="border-b p-4">
       <div className="w-full flex items-center justify-between">
         <RxCross1
-          className="cursor-pointer"
+          className="cursor-pointer 800:mb-['unset'] 800:ml-['unset'] mb-2 ml-2 "
           onClick={() => removeFromWishlistHandler(data)}
         />
         <img
@@ -106,7 +106,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
         <div className="pl-1.25 pr-9">
           <h1>{data.name}</h1>
 
-          <h4 className="font-150 text-4.25 pt-0.75 text-[#d02222] font-Roboto">
+          <h4 className="font-150 text-4.25 pt-0.75 800:pt-[3px] text-[#d02222] font-Roboto">
             US${totalPrice}
           </h4>
         </div>
