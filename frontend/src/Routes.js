@@ -19,7 +19,25 @@ import ShopCreateEventPage from "./pages/ShopCreateEventPage";
 import ShopAllEventsPage from "./pages/ShopAllEventsPage";
 import ShopAllCouponsPage from "./pages/ShopAllCouponsPage";
 import ShopPreviewPage from "./pages/ShopPreviewPage";
-
+import CheckoutPage from "./pages/CheckoutPage";
+import PaymentPage from "./pages/PaymentPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import ShopAllOrders from "./pages/ShopAllOrders";
+import ShopOrderDetails from "./pages/ShopOrderDetails";
+import OrderDetailPage from "./pages/OrderDetailPage";
+import TrackOrderPage from "./pages/TrackOrderPage";
+import ShopOrderRefund from "./pages/ShopOrderRefund";
+import ShopSettingPage from "./pages/ShopSettingPage";
+import ShopWithdrawMoneyPage from "./pages/ShopWithdrawMoneyPage";
+import ShopInboxPage from "./pages/ShopInboxPage";
+import UserInbox from "./pages/UserInbox";
+import AdminDashboardPage from "./pages/adminDashboardPage";
+import AdminDashboardUsersPage from "./pages/AdminDashboardUsersPage";
+import AdminDashboardShop from "./pages/AdminDashboardShop";
+import AdminDashboardOrders from "./pages/AdminDashboardOrders";
+import AdminDashboardProducts from "./pages/AdminDashboardProducts";
+import AdminDashboardEvents from "./pages/AdminDashboardEvents";
+import AdminDashboardWithdraw from "./pages/AdminDashboardWithdraw";
 export {
   LoginPage,
   SignupPage,
@@ -42,4 +60,23 @@ export {
   ShopAllEventsPage,
   ShopAllCouponsPage,
   ShopPreviewPage,
+  CheckoutPage,
+  PaymentPage,
+  OrderSuccessPage,
+  ShopAllOrders,
+  ShopOrderDetails,
+  OrderDetailPage,
+  TrackOrderPage,
+  ShopOrderRefund,
+  ShopSettingPage,
+  ShopWithdrawMoneyPage,
+  ShopInboxPage,
+  UserInbox,
+  AdminDashboardPage,
+  AdminDashboardUsersPage,
+  AdminDashboardShop,
+  AdminDashboardOrders,
+  AdminDashboardProducts,
+  AdminDashboardEvents,
+  AdminDashboardWithdraw,
 };
