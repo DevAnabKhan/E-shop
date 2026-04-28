@@ -6,17 +6,21 @@ import { useSelector } from "react-redux";
 
 const FeatureProducts = () => {
   const { allUserProducts } = useSelector((state) => state.product);
-  console.log(allUserProducts);
+
   return (
     <div className={`${styles.section}`}>
       <div className={`${styles.heading}`}>
         <h1>Featured Products</h1>
       </div>
       <div className="grid grid-cols-1 gap-5 md:gap-6.25 lg:grid-cols-4 lg:gap-6.25 xl:grid-cols-5 xl:gap-7.5 mb-12 border-0">
-        {allUserProducts &&
-          allUserProducts.map((i, index) => (
-            <ProductCard data={i} key={index} />
-          ))}
+        {allUserProducts && allUserProducts.length !== 0 && (
+          <>
+            {allUserProducts &&
+              allUserProducts.map((i, index) => (
+                <ProductCard data={i} key={index} />
+              ))}
+          </>
+        )}
       </div>
     </div>
   );
