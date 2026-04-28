@@ -157,19 +157,24 @@ const OrderDetails = () => {
           </select>
         )}
 
-      <select
-        className="bg-amber-50- w-[200px] mt-2 border h-[35px] rounded-[5px]"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-      >
-        {["Processing refund", "Refund Success"]
-          .slice(["Processing refund", "Refund Success"].indexOf(data.status))
-          .map((option, index) => (
-            <option value={option} key={index}>
-              {option}
-            </option>
-          ))}
-      </select>
+      {data.status === "Processing refund" ||
+        (data.status === "Refund Success" ? (
+          <select
+            className="bg-amber-50- w-[200px] mt-2 border h-[35px] rounded-[5px]"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            {["Processing refund", "Refund Success"]
+              .slice(
+                ["Processing refund", "Refund Success"].indexOf(data.status),
+              )
+              .map((option, index) => (
+                <option value={option} key={index}>
+                  {option}
+                </option>
+              ))}
+          </select>
+        ) : null)}
       <div
         className={`${styles.button} mt-5 bg-[#fce1e6]! rounded-[4px] text-[#e94560] font-[600] h-[45px] text-[18px]`}
         onClick={
