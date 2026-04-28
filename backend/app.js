@@ -37,6 +37,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.send("E-Shop Backend is running 🚀");
+});
 app.use("/api/v2/user", userRouter);
 app.use("/api/v2/shop", shopRouter);
 app.use("/api/v2/product", productRoute);
