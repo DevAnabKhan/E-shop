@@ -8,6 +8,7 @@ const shopSlice = createSlice({
     shopLoading: true,
     shop: null,
     error: null,
+    adminShops: null,
   },
   reducers: {
     loadShopRequest: (state) => {
@@ -20,6 +21,17 @@ const shopSlice = createSlice({
     },
     loadShopFail: (state, action) => {
       state.isShopAuthenticated = false;
+      state.shopLoading = false;
+      state.error = action.payload;
+    },
+    getAllShopRequest: (state) => {
+      state.shopLoading = true;
+    },
+    getAllShopSuccess: (state, action) => {
+      state.shopLoading = false;
+      state.adminShops = action.payload;
+    },
+    getAllShopFail: (state, action) => {
       state.shopLoading = false;
       state.error = action.payload;
     },
@@ -39,6 +51,9 @@ export const {
   loadShopRequest,
   loadShopSuccess,
   loadShopFail,
+  getAllShopRequest,
+  getAllShopSuccess,
+  getAllShopFail,
   clearError,
   shopLogout,
 } = shopSlice.actions;
