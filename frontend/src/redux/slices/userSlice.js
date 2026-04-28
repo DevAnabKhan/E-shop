@@ -6,11 +6,13 @@ const userSlice = createSlice({
   initialState: {
     isAuthenticated: false,
     loading: true,
+    isUserLoading: true,
     user: null,
     error: null,
     updateUserLoading: false,
     updateUserAddressLoading: false,
     successMessage: null,
+    adminUsers: null,
   },
   reducers: {
     loadUserRequest: (state) => {
@@ -63,6 +65,17 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.successMessage = null;
     },
+    getAllUsersRequest: (state) => {
+      state.isUserLoading = true;
+    },
+    getAllUsersSuccess: (state, action) => {
+      state.isUserLoading = false;
+      state.adminUsers = action.payload;
+    },
+    getAllUsersFail: (state, action) => {
+      state.isUserLoading = false;
+      state.error = action.payload;
+    },
     clearError: (state) => {
       state.error = null;
     },
@@ -86,6 +99,9 @@ export const {
   deleteUserAddressRequest,
   deleteUserAddressFail,
   deleteUserAddressSuccess,
+  getAllUsersRequest,
+  getAllUsersSuccess,
+  getAllUsersFail,
   clearMessage,
 } = userSlice.actions;
 
