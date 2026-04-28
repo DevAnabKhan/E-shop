@@ -17,7 +17,7 @@ const ProductsPage = () => {
     if (categoryData === null) {
       const d =
         allUserProducts &&
-        allUserProducts.sort((a, b) => a.sold_out - b.sold_out);
+        [...allUserProducts].sort((a, b) => a.sold_out - b.sold_out);
       setData(d);
     } else {
       const d =
