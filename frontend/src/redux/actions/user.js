@@ -14,6 +14,9 @@ import {
   deleteUserAddressRequest,
   deleteUserAddressSuccess,
   deleteUserAddressFail,
+  getAllUsersRequest,
+  getAllUsersFail,
+  getAllUsersSuccess,
 } from "../slices/userSlice";
 import { Country } from "country-state-city";
 
@@ -92,6 +95,19 @@ export const deleteUserAddress = (id) => async (dispatch) => {
       deleteUserAddressFail(
         error.response?.data?.message || "Something went wrong",
       ),
+    );
+  }
+};
+export const getAllUsersForAdmin = () => async (dispatch) => {
+  try {
+    dispatch(getAllUsersRequest());
+
+    const { data } = await axios.get(`${server}/user/get-all-admin-users`);
+
+    dispatch(getAllUsersSuccess(data.users));
+  } catch (error) {
+    dispatch(
+      getAllUsersFail(error.response?.data?.message || "Something went wrong"),
     );
   }
 };
