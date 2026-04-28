@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { server } from "../../../server";
 
 function calculateTimeLeft(data) {
   const difference = +new Date(data.Finish_Date) - +new Date(); // ✅ future date
@@ -22,6 +24,15 @@ const Countdown = ({ data }) => {
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft(data));
     }, 1000);
+
+    if (
+      typeof timeLeft.days === "undefined" &&
+      typeof timeLeft.hours === "undefined" &&
+      typeof timeLeft.minutes === "undefined" &&
+      typeof timeLeft.seconds === "undefined"
+    ) {
+      axios.delete(`${server}/event/delete-shop-event/${data._id}`);
+    }
     return () => clearInterval(timer); // ✅ cleanup
   }, []);
 
