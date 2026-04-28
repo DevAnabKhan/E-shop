@@ -8,13 +8,73 @@ import sendMail from "../utils/sendMail.js";
 import Shop from "../model/shopModel.js";
 import sendShopToken from "../utils/shopToken.js";
 
+// export const registerSeller = catchAsyncErrors(async (req, res, next) => {
+//   const { email } = req.body;
+//   const sellerEmail = await Shop.findOne({ email });
+//   if (sellerEmail) {
+//     if (req.file) {
+//       fs.unlinkSync(path.join("uploads", req.file.filename));
+//     }
+//     return next(new ErrorHandler("Seller already exists", 400));
+//   }
+
+//   if (!req.file) {
+//     return next(new ErrorHandler("Avatar image is required", 400));
+//   }
+
+//   const filename = req.file.filename;
+//   const fileUrl = `/uploads/${req.file.filename}`;
+
+//   const seller = {
+//     name: req.body.name,
+//     email,
+//     password: req.body.password,
+//     address: req.body.address,
+//     phoneNumber: req.body.phoneNumber,
+//     zipCode: req.body.zipCode,
+//     avatar: {
+//       public_id: req.file.filename,
+//       url: fileUrl,
+//     },
+//   };
+
+//   const activationToken = createActivationToken(seller);
+
+//   const activationUrl = `http://localhost:5173/seller/activation/${activationToken}`;
+//   try {
+//     await sendMail({
+//       email: seller.email,
+//       subject: "Activate your shop",
+//       message: `Hello ${seller.name}, please click the link to activate your shop: ${activationUrl}`,
+//     });
+//   } catch (e) {
+//     return next(new ErrorHandler(e.message, 500));
+//   }
+
+//   // const newUser = await User.create(user);
+
+//   // res.status(201).json({
+//   //   success: true,
+//   //   message: "User registered successfully",
+//   //   user: newUser,
+//   // });
+
+//   res.status(200).json({
+//     success: true,
+//     message: `Please check your email: ${seller.email} to activate your shop`,
+//   });
+// });
+
 export const registerSeller = catchAsyncErrors(async (req, res, next) => {
   const { email } = req.body;
+
   const sellerEmail = await Shop.findOne({ email });
+
   if (sellerEmail) {
     if (req.file) {
-      fs.unlinkSync(path.join("uploads", req.file.filename));
+      fs.unlinkSync(path.join(process.cwd(), "../uploads", req.file.filename));
     }
+
     return next(new ErrorHandler("Seller already exists", 400));
   }
 
@@ -22,10 +82,9 @@ export const registerSeller = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Avatar image is required", 400));
   }
 
-  const filename = req.file.filename;
   const fileUrl = `/uploads/${req.file.filename}`;
 
-  const seller = {
+  const shop = await Shop.create({
     name: req.body.name,
     email,
     password: req.body.password,
@@ -36,33 +95,9 @@ export const registerSeller = catchAsyncErrors(async (req, res, next) => {
       public_id: req.file.filename,
       url: fileUrl,
     },
-  };
-
-  const activationToken = createActivationToken(seller);
-
-  const activationUrl = `http://localhost:5173/seller/activation/${activationToken}`;
-  try {
-    await sendMail({
-      email: seller.email,
-      subject: "Activate your shop",
-      message: `Hello ${seller.name}, please click the link to activate your shop: ${activationUrl}`,
-    });
-  } catch (e) {
-    return next(new ErrorHandler(e.message, 500));
-  }
-
-  // const newUser = await User.create(user);
-
-  // res.status(201).json({
-  //   success: true,
-  //   message: "User registered successfully",
-  //   user: newUser,
-  // });
-
-  res.status(200).json({
-    success: true,
-    message: `Please check your email: ${seller.email} to activate your shop`,
   });
+
+  sendShopToken(shop, 201, res);
 });
 
 export const activateShopAccount = catchAsyncErrors(async (req, res, next) => {
