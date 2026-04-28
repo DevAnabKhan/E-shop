@@ -44,7 +44,7 @@ const ShopCreate = () => {
       if (res.data.success) {
         setLoading(false);
         toast.success(res.data.message);
-        navigate("/");
+        navigate("/dashboard");
         setName("");
         setEmail("");
         setPassword("");
@@ -140,7 +140,7 @@ const ShopCreate = () => {
                 />
               </div>
             </div>
-            <div>
+            {/* <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
@@ -158,7 +158,7 @@ const ShopCreate = () => {
                   className="appearance-none border-gray-300 rounded-md w-full shadow-sm block py-2 px-3 border placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
-            </div>
+            </div> */}
             <div>
               <label
                 htmlFor="address"
