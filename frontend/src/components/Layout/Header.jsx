@@ -228,20 +228,29 @@ const Header = ({ activeHeading }) => {
                 </Link>
               </div>
               <div>
-                <div className="relative mr-5">
+                <div
+                  className="relative mr-5"
+                  onClick={() => setOpenCart(true)}
+                >
                   <AiOutlineShoppingCart size={30} />
                   <span className="absolute -top-1 -right-1 rounded-full bg-[#3bc177] w-4 h-4 text-white text-[10px] flex items-center justify-center">
                     {cart && cart.length}
                   </span>
                 </div>
               </div>
+              {openCart && <Cart setOpenCart={setOpenCart} />}
+
+              {openWishlist && <Wishlist setOpenWishlist={setOpenWishlist} />}
             </div>
             {open && (
               <div className="fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0">
                 <div className="fixed w-[70%] bg-white h-screen top-0 left-0 z-10">
                   <div className="w-full justify-between pr-3 flex">
                     <div>
-                      <div className="relative mr-3.75">
+                      <div
+                        className="relative mr-3.75"
+                        onClick={() => setOpenWishlist(true) || setOpen(close)}
+                      >
                         <AiOutlineHeart size={30} className="mt-5 ml-3" />
                         <span className="absolute -top-1 -right-1 rounded-full bg-[#3bc177] w-4 h-4 text-white text-[10px] flex items-center justify-center">
                           {wishlist && wishlist.length}
