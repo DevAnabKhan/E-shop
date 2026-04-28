@@ -209,7 +209,6 @@ const AllOrders = () => {
     }
   }, [user]);
 
-  console.log(orders);
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
