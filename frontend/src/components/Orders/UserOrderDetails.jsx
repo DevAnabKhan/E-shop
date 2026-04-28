@@ -110,18 +110,14 @@ const UserOrderDetails = () => {
                 US${item.discountPrice} * {item.BsFillBagFillqty}
               </h5>
             </div>
-            {item.isReviewed || item.status !== "Delivered" ? null : (
-              <>
-                {data.status === "Delivered" && (
-                  <div
-                    className={`${styles.button} text-[#fff]`}
-                    onClick={() => setOpen(true) || setSelectedItem(item)}
-                  >
-                    Write a review
-                  </div>
-                )}
-              </>
-            )}
+            {!item.isReviewed && data.status === "Delivered" ? (
+              <div
+                className={`${styles.button} text-[#fff]`}
+                onClick={() => setOpen(true) || setSelectedItem(item)}
+              >
+                Write a review
+              </div>
+            ) : null}
           </div>
         ))}
 
