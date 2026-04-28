@@ -378,18 +378,26 @@ const ShopInbox = ({
                   alt=""
                 />
               )}
-              <div>
-                <div
-                  className={`w-max p-2 rounded ${
-                    item.sender === shopId ? "bg-[#000]" : "bg-[#38c776]"
-                  } text-[#fff] h-min`}
-                >
-                  <p>{item.text}</p>
+              {item.images && (
+                <img
+                  src={`${backend_url}${item.images?.url}`}
+                  className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
+                />
+              )}
+              {item.text !== "" && (
+                <div>
+                  <div
+                    className={`w-max p-2 rounded ${
+                      item.sender === shopId ? "bg-[#000]" : "bg-[#38c776]"
+                    } text-[#fff] h-min`}
+                  >
+                    <p>{item.text}</p>
+                  </div>
+                  <p className="text-[10px] text-[#181616] pt-1">
+                    {format(item.createdAt)}
+                  </p>
                 </div>
-                <p className="text-[10px] text-[#181616] pt-1">
-                  {format(item.createdAt)}
-                </p>
-              </div>
+              )}
             </div>
           ))}
       </div>
