@@ -28,7 +28,7 @@ const ShopLogin = () => {
         toast.success(res.data.message);
         setEmail("");
         setPassword("");
-        window.location.reload(true);
+        navigate("/dashboard");
       }
     } catch (error) {
       setLoading(false);
