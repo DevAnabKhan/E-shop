@@ -42,7 +42,7 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
 
   const activationToken = createActivationToken(user);
 
-  const activationUrl = `http://localhost:5173/activation/${activationToken}`;
+  const activationUrl = `https://e-shop-5v54.vercel.app/activation/${activationToken}`;
   try {
     await sendMail({
       email: user.email,
