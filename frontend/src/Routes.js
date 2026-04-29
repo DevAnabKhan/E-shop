@@ -31,7 +31,7 @@ import ShopSettingPage from "./pages/ShopSettingPage";
 import ShopWithdrawMoneyPage from "./pages/ShopWithdrawMoneyPage";
 import ShopInboxPage from "./pages/ShopInboxPage";
 import UserInbox from "./pages/UserInbox";
-import AdminDashboardPage from "./pages/adminDashboardPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminDashboardUsersPage from "./pages/AdminDashboardUsersPage";
 import AdminDashboardShop from "./pages/AdminDashboardShop";
 import AdminDashboardOrders from "./pages/AdminDashboardOrders";
