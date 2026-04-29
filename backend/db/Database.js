@@ -14,15 +14,16 @@
 // export default connectDB;
 import mongoose from "mongoose";
 
-const connectDB = async () => {
-  try {
-    console.log("MONGODB_URI:", process.env.MONGODB_URI); // ← add this
+let isConnected = false;
 
+const connectDB = async () => {
+  if (isConnected) return; // ← prevents new connection on every serverless request
+
+  try {
     const conn = await mongoose.connect(`${process.env.MONGODB_URI}/e-shop`, {
       serverSelectionTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
     });
-
+    isConnected = true;
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error.message);

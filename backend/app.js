@@ -14,6 +14,12 @@ import conversationRoute from "./routes/conversationRoute.js";
 import messageRoute from "./routes/messageRoute.js";
 import withdrawRoute from "./routes/withdrawRoute.js";
 import path from "path";
+import connectDB from "./db/Database.js";
+
+dotenv.config({ path: "./config/.env" });
+
+// Connect to DB (safe for serverless — reuses existing connection)
+await connectDB();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -25,12 +31,6 @@ app.use(
 );
 app.use("/uploads", express.static("./uploads"));
 app.use(express.urlencoded({ extended: true }));
-
-if (process.env.NODE_ENV !== "PRODUCTION") {
-  dotenv.config({
-    path: "./config/.env",
-  });
-}
 
 app.use((req, res, next) => {
   console.log("Incoming request:", req.method, req.url);
