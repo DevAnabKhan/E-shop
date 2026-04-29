@@ -77,7 +77,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             <div className="flex flex-col md:flex-row gap-4 mt-8">
               <div className="w-full md:w-[50%]">
                 <img
-                  src={`${backend_url}/uploads/${data.images[0]?.url}`}
+                  src={`${backend_url}${data.images[0]?.url}`}
                   alt={data.name}
                   className="w-full object-contain"
                 />

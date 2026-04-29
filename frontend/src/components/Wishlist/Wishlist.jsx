@@ -98,7 +98,7 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
           onClick={() => removeFromWishlistHandler(data)}
         />
         <img
-          src={`${backend_url}/uploads/${data.images[0]?.url}`}
+          src={`${backend_url}${data.images[0]?.url}`}
           alt=""
           className="w-20 h-20 ml-2 mr-2 rounded-[5px]"
         />

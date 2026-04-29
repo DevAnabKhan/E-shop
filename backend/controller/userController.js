@@ -6,6 +6,10 @@ import fs from "fs";
 import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import jwtToken from "../utils/jwtToken.js";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinary.js";
 
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -24,17 +28,16 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Avatar image is required", 400));
   }
 
-  const filename = req.file.filename;
-  const fileUrl = `/uploads/${req.file.filename}`;
+  // const filename = req.file.filename;
+  // const fileUrl = `/uploads/${req.file.filename}`;
+
+  const result = await uploadToCloudinary(req.file.buffer, "e-shop");
 
   const user = {
     name,
     email,
     password,
-    avatar: {
-      public_id: req.file.filename,
-      url: fileUrl,
-    },
+    avatar: { public_id: result.public_id, url: result.secure_url },
   };
 
   const activationToken = createActivationToken(user);
@@ -216,22 +219,27 @@ export const updateAvatar = catchAsyncErrors(async (req, res, next) => {
   const existUser = await User.findById(req.user.id);
 
   // ✅ Correctly delete old avatar using the object structure
+  // if (existUser.avatar && existUser.avatar.public_id) {
+  //   const existAvatarPath = `uploads/${existUser.avatar.public_id}`;
+  //   if (fs.existsSync(existAvatarPath)) {
+  //     fs.unlinkSync(existAvatarPath);
+  //   }
+  // }
+
+  // // ✅ Save with same structure as register/login
+  // const fileUrl = {
+  //   public_id: req.file.filename,
+  //   url: `/uploads/${req.file.filename}`,
+  // };
   if (existUser.avatar && existUser.avatar.public_id) {
-    const existAvatarPath = `uploads/${existUser.avatar.public_id}`;
-    if (fs.existsSync(existAvatarPath)) {
-      fs.unlinkSync(existAvatarPath);
-    }
+    await deleteFromCloudinary(existUser.avatar.public_id); // ← changed
   }
 
-  // ✅ Save with same structure as register/login
-  const fileUrl = {
-    public_id: req.file.filename,
-    url: `/uploads/${req.file.filename}`,
-  };
+  const result = await uploadToCloudinary(req.file.buffer, "e-shop");
 
   const user = await User.findByIdAndUpdate(
     req.user.id,
-    { avatar: fileUrl },
+    { avatar: { public_id: result.public_id, url: result.secure_url } },
     { new: true },
   );
 

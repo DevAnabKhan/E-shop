@@ -4,6 +4,10 @@ import Shop from "../model/shopModel.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 import fs from "fs";
 import Order from "../model/orderModel.js";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinary.js";
 
 export const getAllProducts = catchAsyncErrors(async (req, res, next) => {
   const products = await Product.find({ shopId: req.params.id });
@@ -19,18 +23,22 @@ export const deleteShopProduct = catchAsyncErrors(async (req, res, next) => {
   const productId = req.params.id;
 
   const productData = await Product.findById(productId);
-  console.log(productData);
+  // console.log(productData);
 
-  productData.images.forEach((image) => {
-    const filename = image.url;
-    const filePath = `uploads/${filename}`;
+  // productData.images.forEach((image) => {
+  //   const filename = image.url;
+  //   const filePath = `uploads/${filename}`;
 
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
-  });
+  //   fs.unlink(filePath, (err) => {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //   });
+  // });
+
+  for (const image of productData.images) {
+    await deleteFromCloudinary(image.public_id); // ← changed
+  }
 
   const product = await Product.findByIdAndDelete(productId);
 
@@ -58,9 +66,16 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
   const files = req.files;
 
-  const imageUrls = files.map((file) => ({
-    url: file.filename, // ✅ FIXED
-  }));
+  // const imageUrls = files.map((file) => ({
+  //   url: file.filename, // ✅ FIXED
+  // }));
+  const imageUrls = await Promise.all(
+    // ← changed
+    req.files.map(async (file) => {
+      const result = await uploadToCloudinary(file.buffer, "e-shop");
+      return { public_id: result.public_id, url: result.secure_url };
+    }),
+  );
 
   const productData = req.body;
   productData.images = imageUrls;

@@ -93,7 +93,7 @@ const Header = ({ activeHeading }) => {
                         <Link key={index} to={`/product/${i._id}`}>
                           <div className="w-full items-center flex py-2">
                             <img
-                              src={`${backend_url}/uploads/${i.images[0]?.url}`}
+                              src={`${backend_url}${i.images[0]?.url}`}
                               alt=""
                               className="w-10 h-10 mr-2.5"
                             />

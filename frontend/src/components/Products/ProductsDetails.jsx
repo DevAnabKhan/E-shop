@@ -123,7 +123,7 @@ const ProductsDetails = ({ data }) => {
             <div className="block w-full 800:flex">
               <div className="w-full 800:w-[50%]">
                 <img
-                  src={`${backend_url}/uploads/${data.images[select]?.url}`}
+                  src={`${backend_url}${data.images[select]?.url}`}
                   //src={data?.image_Url[select].url}
                   alt=""
                   className="w-[80%]"
@@ -137,7 +137,7 @@ const ProductsDetails = ({ data }) => {
                         } cursor-pointer`}
                       >
                         <img
-                          src={`${backend_url}/uploads/${i?.url}`}
+                          src={`${backend_url}${i?.url}`}
                           alt=""
                           className="h-50 overflow-hidden mr-3 mt-3"
                           onClick={() => setSelect(index)}
@@ -156,7 +156,7 @@ const ProductsDetails = ({ data }) => {
                     className={`${select === 0 ? "border" : "border-0"} cursor-pointer`}
                   >
                     <img
-                      src={`${backend_url}/uploads/${data.images[0]?.url}`}
+                      src={`${backend_url}${data.images[0]?.url}`}
                       //src={data?.image_Url[0].url}
                       alt=""
                       className="h-50"
@@ -170,7 +170,7 @@ const ProductsDetails = ({ data }) => {
                     className={`${select === 1 ? "border" : "border-0"} cursor-pointer`}
                   >
                     <img
-                      src={`${backend_url}/uploads/${data.images[0]?.url}`}
+                      src={`${backend_url}${data.images[0]?.url}`}
                       alt=""
                       className="h-50"
                       onClick={() => setSelect(1)}

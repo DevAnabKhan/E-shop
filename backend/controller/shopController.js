@@ -7,6 +7,10 @@ import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail.js";
 import Shop from "../model/shopModel.js";
 import sendShopToken from "../utils/shopToken.js";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinary.js";
 
 // export const registerSeller = catchAsyncErrors(async (req, res, next) => {
 //   const { email } = req.body;
@@ -82,7 +86,8 @@ export const registerSeller = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Avatar image is required", 400));
   }
 
-  const fileUrl = `/uploads/${req.file.filename}`;
+  const result = await uploadToCloudinary(req.file.buffer, "e-shop");
+  // const fileUrl = `/uploads/${req.file.filename}`;
 
   const shop = await Shop.create({
     name: req.body.name,
@@ -91,10 +96,7 @@ export const registerSeller = catchAsyncErrors(async (req, res, next) => {
     address: req.body.address,
     phoneNumber: req.body.phoneNumber,
     zipCode: req.body.zipCode,
-    avatar: {
-      public_id: req.file.filename,
-      url: fileUrl,
-    },
+    avatar: { public_id: result.public_id, url: result.secure_url },
   });
 
   sendShopToken(shop, 201, res);
@@ -205,23 +207,28 @@ export const logoutShop = catchAsyncErrors(async (req, res, next) => {
 export const updateShopAvatar = catchAsyncErrors(async (req, res, next) => {
   const existShop = await Shop.findById(req.shop._id);
 
-  // ✅ Correctly delete old avatar using the object structure
+  // // ✅ Correctly delete old avatar using the object structure
+  // if (existShop.avatar && existShop.avatar.public_id) {
+  //   const existAvatarPath = `uploads/${existShop.avatar.public_id}`;
+  //   if (fs.existsSync(existAvatarPath)) {
+  //     fs.unlinkSync(existAvatarPath);
+  //   }
+  // }
+
+  // // ✅ Save with same structure as register/login
+  // const fileUrl = {
+  //   public_id: req.file.filename,
+  //   url: `/uploads/${req.file.filename}`,
+  // };
   if (existShop.avatar && existShop.avatar.public_id) {
-    const existAvatarPath = `uploads/${existShop.avatar.public_id}`;
-    if (fs.existsSync(existAvatarPath)) {
-      fs.unlinkSync(existAvatarPath);
-    }
+    await deleteFromCloudinary(existShop.avatar.public_id); // ← changed
   }
 
-  // ✅ Save with same structure as register/login
-  const fileUrl = {
-    public_id: req.file.filename,
-    url: `/uploads/${req.file.filename}`,
-  };
+  const result = await uploadToCloudinary(req.file.buffer, "e-shop");
 
   const shop = await Shop.findByIdAndUpdate(
     req.shop._id,
-    { avatar: fileUrl },
+    { avatar: { public_id: result.public_id, url: result.secure_url } },
     { new: true },
   );
 
