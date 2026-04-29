@@ -13,17 +13,17 @@ import orderRoute from "./routes/orderRoute.js";
 import conversationRoute from "./routes/conversationRoute.js";
 import messageRoute from "./routes/messageRoute.js";
 import withdrawRoute from "./routes/withdrawRoute.js";
-
+import path from "path";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://e-shop-5v54.vercel.app/", // <--- your frontend
+    origin: "https://e-shop-5v54.vercel.app", // <--- your frontend
     credentials: true, // <--- allow cookies to be sent
   }),
 );
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static("./uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 if (process.env.NODE_ENV !== "PRODUCTION") {
