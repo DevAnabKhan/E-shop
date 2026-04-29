@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // <--- your frontend
+    origin: "https://e-shop-5v54.vercel.app/", // <--- your frontend
     credentials: true, // <--- allow cookies to be sent
   }),
 );
