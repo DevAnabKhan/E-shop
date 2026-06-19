@@ -10,7 +10,6 @@ frontend/.env.production
 
 # Docker
 docker-compose.override.yml
-.dockerignore
 
 # Build outputs
 dist/
