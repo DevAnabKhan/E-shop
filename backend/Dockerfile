@@ -19,7 +19,7 @@ WORKDIR /app
 
 # Copy node_modules and app from builder
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app . .
+COPY --from=builder /app/ ./
 
 # Create uploads directory
 RUN mkdir -p /app/uploads
