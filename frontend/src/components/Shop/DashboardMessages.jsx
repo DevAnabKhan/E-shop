@@ -9,7 +9,7 @@ import { TfiGallery } from "react-icons/tfi";
 import { format } from "timeago.js";
 import socketIO from "socket.io-client";
 
-const ENDPOINT = "http://localhost:4000";
+const ENDPOINT = import.meta.env.VITE_SOCKET_URL || "http://localhost:4000";
 
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
@@ -311,7 +311,7 @@ const MessageList = ({
         <p className="text-[16px] text-[#000c]">
           {data?.lastMessage !== userData?._id
             ? "You: "
-            : userData?.name.split("")[0] + ": "}
+            : userData?.name?.split(" ")[0] + ": "}
           {data?.lastMessage}
         </p>
       </div>

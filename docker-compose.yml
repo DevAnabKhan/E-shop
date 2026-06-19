@@ -1,0 +1,133 @@
+services:
+  # MongoDB Service (for local development only)
+  # Remove this if using MongoDB Atlas
+
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eshop-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Database
+      MONGODB_URI: ${MONGODB_URI:-mongodb://admin:password123@mongodb:27017/eshop?authSource=admin}
+
+      # Server
+      PORT: 8000
+      NODE_ENV: ${NODE_ENV:-development}
+
+      # JWT & Security
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-your_jwt_secret_key_here}
+      JWT_EXPIRES: ${JWT_EXPIRES:-7d}
+      ACTIVATION_SECRET: ${ACTIVATION_SECRET:-your_activation_secret_here}
+
+      # Email (SMTP)
+      SMPT_HOST: ${SMPT_HOST:-smtp.gmail.com}
+      SMPT_PORT: ${SMPT_PORT:-465}
+      SMPT_PASSWORD: ${SMPT_PASSWORD:-your_email_password_here}
+      SMPT_MAIL: ${SMPT_MAIL:-your_email@gmail.com}
+
+      # Stripe
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_your_key_here}
+      STRIPE_API_KEY: ${STRIPE_API_KEY:-pk_test_your_key_here}
+
+      # Cloudinary
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-your_cloud_name}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-your_api_key}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-your_api_secret}
+
+      # CORS
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3001}
+
+    # depends_on:
+    #   mongodb:
+    #     condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./backend/uploads:/app/uploads
+    networks:
+      - eshop-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Socket.IO Service
+  socket:
+    build:
+      context: ./socket
+      dockerfile: Dockerfile
+    container_name: eshop-socket
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      NODE_ENV: ${NODE_ENV:-development}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3001}
+      BACKEND_URL: ${BACKEND_URL:-http://localhost:8000}
+    volumes:
+      - ./socket:/app
+      - /app/node_modules
+    networks:
+      - eshop-network
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000/api/v2}
+        VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:4000}
+    container_name: eshop-frontend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000/api/v2}
+      VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:4000}
+    depends_on:
+      - backend
+      - socket
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    networks:
+      - eshop-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3001/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  eshop-network:
+    driver: bridge

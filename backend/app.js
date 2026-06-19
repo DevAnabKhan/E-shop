@@ -23,9 +23,11 @@ await connectDB();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+const frontendUrl =
+  process.env.FRONTEND_URL || "https://e-shop-5v54.vercel.app";
 app.use(
   cors({
-    origin: "https://e-shop-5v54.vercel.app", // <--- your frontend
+    origin: frontendUrl, // <--- your frontend
     credentials: true, // <--- allow cookies to be sent
   }),
 );

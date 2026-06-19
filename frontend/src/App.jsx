@@ -181,6 +181,14 @@ const App = () => {
           }
         />
         <Route
+          path="/inbox/:id"
+          element={
+            <ProtectedRoute>
+              <UserInbox />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/dashboard-create-product"
           element={
             <ShopProtectedRoute>
