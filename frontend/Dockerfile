@@ -1,25 +1,25 @@
 # Build stage
-FROM node:20-alpine AS builder
+# FROM node:20-alpine AS builder
 
-WORKDIR /app
+# WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# # Copy package files
+# COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# # Install dependencies
+# RUN npm install
 
-# Copy source code
-COPY . .
+# # Copy source code
+# COPY . .
 
-# Build the application with environment variables
-ARG VITE_API_URL=https://e-shop-5v54.vercel.app/api/v2
-ARG VITE_SOCKET_URL=https://e-shop-5v54.vercel.app
+# # Build the application with environment variables
+# ARG VITE_API_URL=https://e-shop-5v54.vercel.app/api/v2
+# ARG VITE_SOCKET_URL=https://e-shop-5v54.vercel.app
 
-ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_SOCKET_URL=$VITE_SOCKET_URL
+# ENV VITE_API_URL=$VITE_API_URL
+# ENV VITE_SOCKET_URL=$VITE_SOCKET_URL
 
-RUN npm run build
+# RUN npm run build
 
 # Production stage - Use Nginx to serve
 FROM nginx:alpine
